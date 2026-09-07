@@ -1,0 +1,20 @@
+{
+  "extraKnownMarketplaces": {
+    "nvptuoc-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "nguyenvanphituoc/shapeup-sdlc-plugin"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "shapeup-sdlc-plugin@nvptuoc-marketplace": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(node \"*/kernel/harness.mjs\" *)",
+      "Bash(node \"*/kernel/harness.mjs\")",
+      "Workflow"
+    ]
+  }
+}
