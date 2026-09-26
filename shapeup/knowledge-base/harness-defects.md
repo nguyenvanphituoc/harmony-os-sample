@@ -1178,3 +1178,22 @@ flag reaches the orchestrating session only. `hdc` was added to this checkout's 
 on 2026-09-26 (PO decision). The plugin still has no way to tell a run, before it spends a round,
 that its judge cannot drive the app: the Preflight canary runs the probes from a sub-agent, but a
 probe that only launches cannot show that the evaluator could not go further.
+
+## HD-19 — QA reaches the device but hunts no charter (open, raw idea for the Betting Table)
+Measured on two runs of retro-todo, 2026-09-27, Sonnet throughout. On plugin 3.15.0 the hunter looked
+for `hdc` on PATH, found nothing, never ran `launch_cmd`, and returned `done` with `charters: 0/0`;
+the ship report said `QA: run`. Plugin 3.15.1 fixed both halves: the report now reads `not-hunted`
+from the hunt's own charter count, and the preflight reads the knowledge base first and runs
+`launch_cmd`. On 3.15.1 the hunter reached the emulator (launch exit 0, `hdc` by full path, clean
+fault sweep), then still drafted **zero** interactive charters and returned `done`. So the app is
+reachable and nothing is hunted. Two things remain open: the run's own QA ledger row and its return
+still say `run`, and nothing requires a hunt over a reachable app to draft at least one charter.
+
+## HD-20 — the judge graded the Test Surface as two aggregate criteria (open)
+Same run on 3.15.1 (`receipt.json` → 3.15.1). The verdict PASSed on two rows, "Device Test Surface
+rows" and "Local Test Surface rows", each at medium confidence and with no `traces_to`. Earlier runs
+graded one criterion per row. The effects: the requirements projection reads 0/28 even though every AC
+carries `covers:`; REQ-15 (`vi_VN` strings with the same keys as base) is unmet and passed anyway,
+because only `resources/base` exists; and the board stood at 6/10 when EVAL ran. A per-row verdict is
+what makes the matrix, the bug routing and the rewritten-check list work, so an aggregate criterion
+switches off all three without any error.
