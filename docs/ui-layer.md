@@ -73,7 +73,8 @@ Mũi tên một chiều. `shared/uikit` **không bao giờ** import `features/` 
 | Prop chỉ nhận giá trị khởi tạo | `@Param @Once` | Dùng cho giá trị "hạt giống" mà component tự quản sau đó (ví dụ giá trị mở đầu của một ô nhập) |
 | Sự kiện ra | `@Event` | Tên `onX`. **Không trả giá trị** — component không hỏi, nó báo |
 | State giao diện thuần | `@Local` | Tab đang chọn · panel mở · đang focus. Không lộ ra ngoài |
-| Nội dung con | `WrappedBuilder<[XParams]>` truyền qua `@Param` | `@Builder` **toàn cục** + `wrapBuilder()` — xem 1.4 |
+| Nội dung con — slot cố định (đúng một vùng, không chọn theo khoá) | `@Require @BuilderParam` | `ScreenScaffold.body` · `AppCard.content` · `FormFrame.fields` — xác nhận ở spike U2 |
+| Nội dung con — slot chọn theo khoá (ô biểu mẫu, thân lớp phủ, phần tử danh sách, nhánh trạng thái, theme) | `WrappedBuilder<[XParams]>` truyền qua `@Param` | `@Builder` **toàn cục** + `wrapBuilder()` — xem 1.4 |
 | Style tái dùng | `AttributeModifier` | Không `@Styles`, không `@Extend` — xem 1.5 |
 
 **Component không được:** gọi use case · đọc store · gọi `AppStorageV2.connect()` · chạm `NavPathStack` ·
@@ -538,6 +539,11 @@ Tiếng Việt chỉ có nhánh `other`, tiếng Anh có `one`/`other`, tiếng 
 quy tắc số nhiều phải là **dữ liệu theo ngôn ngữ**, không phải `if` trong code — một `if` viết theo
 tiếng Việt sẽ sai ở mọi ngôn ngữ còn lại, và không ai phát hiện cho tới lúc dịch.
 
+**Dùng trực tiếp qua `$r`** (đã xác nhận — spike U1 ở [8](#8--cần-kiểm-chứng)):
+`Text($r('app.plural.todoList_itemCount', n, n))`, dựng bên trong một `@Computed` getter của
+ViewModel — tham số đầu chọn nhánh số nhiều, tham số sau điền vào `%d`. Không cần lớp bọc trong
+`shared/uikit/i18n`; `count` vẫn ở lại `@Trace`, chỉ `Resource` mới được suy ra lúc vẽ.
+
 **Ngày giờ, số, tiền tệ, thời gian tương đối** đi qua `shared/utils/format` (`.ts` thuần, dùng `intl`):
 
 | Luật | Vì sao |
@@ -555,7 +561,7 @@ với `status` ở [2.3](#23-hình-dạng-chuẩn-của-viewmodel) — thứ suy
 | Nguồn | Cách đặt | Ghi ở đâu |
 |---|---|---|
 | Ngôn ngữ hệ thống | Mặc định, không làm gì | — |
-| Người dùng chọn trong app | `i18n.System.setAppPreferredLanguage(tag)` | `preferences`, áp lại ở task khởi động đầu tiên |
+| Người dùng chọn trong app | `i18n.System.setAppPreferredLanguage(tag)` — **đã xác nhận (spike U4 ở [8](#8--cần-kiểm-chứng))**: đặt một **tag cụ thể** áp ngay cho mọi màn đang mở; đặt `default` chỉ có hiệu lực ở lần khởi động nguội kế tiếp | Cài đặt của app này là volatile — **không** ghi `preferences`; khởi động nguội luôn là "theo hệ thống". Bộ chọn ở Settings vì vậy chỉ có English / Tiếng Việt |
 
 Ba luật để việc đổi ngôn ngữ không cần khởi động lại:
 
@@ -679,6 +685,12 @@ ThemeControl.setDefaultTheme(appTheme)
 Bài kiểm rẻ nhất và bắt được nhiều lỗi nhất: mở máy, kéo cỡ chữ hệ thống lên mức lớn nhất, đi qua
 mọi màn. Bố cục vỡ ở đây là bố cục có `height` cứng ở chỗ không nên có.
 
+**`fp` chỉ co giãn khi `configuration.json` khai `followSystem`** — mặc định của hệ thống là
+**không** theo cỡ chữ hệ thống (`nonFollowSystem`), đã xác nhận ở spike U3 ([8](#8--cần-kiểm-chứng)).
+App hero-todo khai `followSystem` trong `AppScope/resources/base/profile/configuration.json` và
+không đặt trần (`fontSizeMaxScale: 3.2`) — R12 yêu cầu không cắt chữ ở mức lớn nhất, một trần thấp
+hơn sẽ che đúng lỗi mà luật này tồn tại để bắt.
+
 ### 4.5 Nhiều kích thước cửa sổ
 
 | Việc | Cách | Đặt ở đâu |
@@ -796,17 +808,20 @@ Test giao diện tìm phần tử qua `.id()`, nên quy ước đặt `id` là *
 Cùng quy ước với [phần 13 của artifact nguồn](index.md): ghi rõ chỗ nào tài liệu chưa dám chốt,
 và cách kiểm mất bao lâu.
 
-| # | Câu hỏi | Vì sao còn mở | Cách kiểm |
+**Cả năm mục dưới đây đã chốt** — mỗi hàng trích nguồn spike đã ghi quyết định, xem file spike để
+đọc phần Investigation/Decision đầy đủ.
+
+| # | Câu hỏi | Kết luận (đã chốt) | Nguồn |
 |---|---|---|---|
-| U1 | `$r('app.plural.x', n)` dùng trực tiếp được, hay phải qua `resourceManager.getPluralStringValue`? | Tài liệu mô tả đường qua `resourceManager`; đường `$r` chưa xác nhận | Dựng một `Text` với khoá plural, xem có ra đúng nhánh không. Nếu không → bọc trong `shared/uikit/i18n` |
-| U2 | `@BuilderParam` có dùng được trong `@ComponentV2` không? | Tài liệu V2 chưa nói rõ | Nếu không → truyền `WrappedBuilder` qua `@Param`, tức đúng cơ chế ở [1.4](#14-registry--một-cơ-chế-cho-mọi-chọn-theo-khoá), nên **kiến trúc không đổi dù kết quả thế nào** |
-| U3 | Có chặn được mức co giãn cỡ chữ ở mức ứng dụng không? | Đọc được `fontSizeScale` từ cấu hình; chưa rõ có API đặt trần | Tra `.d.ts` của `UIContext` và `Configuration`. Nếu không có → bố cục phải chịu được mức lớn nhất, tức [4.4](#44-cỡ-chữ-hệ-thống-và-khả-năng-tiếp-cận) giữ nguyên |
-| U4 | `setAppPreferredLanguage` có làm mọi màn đang mở vẽ lại ngay, hay cần dựng lại UI? | Nó phát cập nhật cấu hình; phạm vi ảnh hưởng chưa xác nhận | Đổi ngôn ngữ khi đang ở màn thứ ba của ngăn xếp, xem màn đó và các màn phía dưới |
-| U5 | `extRuleSet` của `code-linter.json5` dùng được từ bản DevEco nào? | Kế thừa mục 5 còn mở của artifact nguồn | Gõ `extRuleSet`, xem IDE có gợi ý. Có → rule L1–L11 chuyển sang linter, báo lỗi ngay trong IDE thay vì chờ build |
+| U1 | `$r('app.plural.x', n)` dùng trực tiếp được, hay phải qua `resourceManager.getPluralStringValue`? | **Có.** Dùng thẳng `$r('app.plural.todoList_itemCount', n, n)` trong một `@Computed` getter của ViewModel — không cần lớp bọc trong `shared/uikit/i18n`. Cập nhật [3.5](#35-số-nhiều-ngày-giờ-con-số): ví dụ số nhiều nay có thêm dạng `$r(key, n, n)`. | `shapeup/hero-todo/shaping/spike-U1-plural-via-r.md` |
+| U2 | `@BuilderParam` có dùng được trong `@ComponentV2` không? | **Có**, cho **slot cố định** (đúng một vùng nội dung con, không chọn theo khoá): `@Require @BuilderParam`. **Slot chọn theo khoá** (ô biểu mẫu, thân lớp phủ, phần tử danh sách, nhánh trạng thái, theme) vẫn giữ registry — `WrappedBuilder` qua `@Param`, đúng cơ chế ở [1.4](#14-registry--một-cơ-chế-cho-mọi-chọn-theo-khoá). Cập nhật [1.2](#12-hợp-đồng-của-một-component): hàng "Nội dung con" nay tách hai trường hợp. | `shapeup/hero-todo/shaping/spike-U2-builderparam-in-v2.md` |
+| U3 | Có chặn được mức co giãn cỡ chữ ở mức ứng dụng không? | **Có, chặn được** (`AppScope/resources/base/profile/configuration.json` — `fontSizeScale` · `fontSizeMaxScale`) — nhưng mặc định của hệ thống là **`nonFollowSystem`** (không theo hệ thống) trừ khi app tự khai `followSystem`. App hero-todo khai `followSystem` và **không** đặt trần (`fontSizeMaxScale: 3.2`) vì R12 yêu cầu không cắt chữ ở mức lớn nhất. Cập nhật [4.4](#44-cỡ-chữ-hệ-thống-và-khả-năng-tiếp-cận): thêm dòng về mặc định không theo hệ thống. | `shapeup/hero-todo/shaping/spike-U3-font-scale-cap.md` |
+| U4 | `setAppPreferredLanguage` có làm mọi màn đang mở vẽ lại ngay, hay cần dựng lại UI? | **Có, với tag cụ thể** — mọi `$r` đang mở vẽ lại ngay, không cần dựng lại `NavPathStack`. Đặt lại `default` chỉ có hiệu lực ở lần khởi động nguội tiếp theo. Vì cài đặt của app này là volatile (không ghi `preferences`), màn hình khởi động nguội luôn *là* "theo hệ thống", nên bộ chọn ngôn ngữ ở Settings chỉ có hai lựa chọn: English / Tiếng Việt. Cập nhật [3.6](#36-đổi-ngôn-ngữ-lúc-chạy): hàng "Người dùng chọn trong app" nay ghi rõ tag cụ thể áp ngay, `default` chờ khởi động nguội. | `shapeup/hero-todo/shaping/spike-U4-language-switch-redraw.md` |
+| U5 | `extRuleSet` của `code-linter.json5` dùng được từ bản DevEco nào? | **Có, từ DevEco Studio 5.1.0 Release** — nhưng pitch này vẫn giữ L1–L11 là hvigor task (build-time); port sang Code Linter là raw idea riêng cho Betting Table, không nằm trong appetite này. | `shapeup/hero-todo/shaping/spike-U5-linter-extRuleSet.md` |
 
 Bốn mục đầu **không** làm thay đổi kiến trúc dù kết quả ra sao — chúng chỉ quyết định có phải viết
-thêm một lớp bọc mỏng trong `shared/uikit/i18n` hay không. Mục U5 quyết định rule chạy **lúc gõ**
-hay **lúc build**, và đó là khác biệt giữa việc sửa ngay và việc sửa sau khi đã viết xong màn hình.
+thêm một lớp bọc mỏng trong `shared/uikit/i18n` hay không, và không mục nào trong bốn mục đó cần
+lớp bọc. Mục U5 quyết định rule chạy **lúc gõ** hay **lúc build**, và pitch này giữ nguyên lúc build.
 
 ---
 

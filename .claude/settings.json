@@ -1,4 +1,21 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(./scripts/t0-assemble.sh:*)",
+      "Bash(./scripts/t0-test.sh:*)",
+      "Bash(./scripts/launch-probe.sh:*)",
+      "Bash(shasum:*)",
+      "Bash(/Applications/DevEco-Studio.app/Contents/tools/hvigor/bin/hvigorw:*)",
+      "Bash(DEVECO_SDK_HOME=/Applications/DevEco-Studio.app/Contents/sdk /Applications/DevEco-Studio.app/Contents/tools/hvigor/bin/hvigorw:*)",
+      "Bash(cd app && DEVECO_SDK_HOME=/Applications/DevEco-Studio.app/Contents/sdk /Applications/DevEco-Studio.app/Contents/tools/hvigor/bin/hvigorw:*)",
+      "Bash(node \"*/kernel/harness.mjs\" *)",
+      "Bash(node \"*/kernel/harness.mjs\")",
+      "Workflow"
+    ]
+  },
+  "enabledPlugins": {
+    "shapeup-sdlc-plugin@nvptuoc-marketplace": true
+  },
   "extraKnownMarketplaces": {
     "nvptuoc-marketplace": {
       "source": {
@@ -6,15 +23,5 @@
         "repo": "nguyenvanphituoc/shapeup-sdlc-plugin"
       }
     }
-  },
-  "enabledPlugins": {
-    "shapeup-sdlc-plugin@nvptuoc-marketplace": true
-  },
-  "permissions": {
-    "allow": [
-      "Bash(node \"*/kernel/harness.mjs\" *)",
-      "Bash(node \"*/kernel/harness.mjs\")",
-      "Workflow"
-    ]
   }
 }
