@@ -1,0 +1,10 @@
+# The rename dialog opens pre-filled with the current name
+launch
+tap id "lists.renameButton" 1
+wait 500
+expect text "RENAME LIST"
+expect text "Groceries"
+tap id "listName.cancelButton"
+wait 500
+expect no text "RENAME LIST"
+expect text "Groceries"

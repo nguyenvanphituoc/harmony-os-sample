@@ -1,8 +1,48 @@
 {
   "float": [
     {
-      "name": "page_text_font_size",
-      "value": "50fp"
+      "name": "borderWidth",
+      "value": "2vp"
+    },
+    {
+      "name": "shadowOffset",
+      "value": "4vp"
+    },
+    {
+      "name": "radius",
+      "value": "4vp"
+    },
+    {
+      "name": "spacingS",
+      "value": "8vp"
+    },
+    {
+      "name": "spacingM",
+      "value": "16vp"
+    },
+    {
+      "name": "spacingL",
+      "value": "24vp"
+    },
+    {
+      "name": "fontTitle",
+      "value": "28fp"
+    },
+    {
+      "name": "fontBody",
+      "value": "18fp"
+    },
+    {
+      "name": "fontSmall",
+      "value": "14fp"
+    },
+    {
+      "name": "minTouch",
+      "value": "48vp"
+    },
+    {
+      "name": "checkSize",
+      "value": "28vp"
     }
   ]
 }

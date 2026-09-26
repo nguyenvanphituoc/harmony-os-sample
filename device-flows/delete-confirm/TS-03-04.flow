@@ -1,0 +1,6 @@
+# The delete dialog reads the list name and item count
+launch
+tap id "lists.deleteButton" 1
+wait 500
+expect text 'Delete "Groceries" and its 3 items?'
+tap id "confirm.cancelButton"

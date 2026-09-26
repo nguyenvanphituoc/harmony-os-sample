@@ -11,6 +11,102 @@
     {
       "name": "EntryAbility_label",
       "value": "label"
+    },
+    {
+      "name": "lists_title",
+      "value": "MY LISTS"
+    },
+    {
+      "name": "progress_done",
+      "value": "%d/%d done"
+    },
+    {
+      "name": "progress_none",
+      "value": "No items"
+    },
+    {
+      "name": "lists_empty_title",
+      "value": "No lists yet"
+    },
+    {
+      "name": "lists_empty_action",
+      "value": "CREATE YOUR FIRST LIST"
+    },
+    {
+      "name": "list_empty_title",
+      "value": "No items yet"
+    },
+    {
+      "name": "list_empty_hint",
+      "value": "Add your first item above"
+    },
+    {
+      "name": "icon_back",
+      "value": "←"
+    },
+    {
+      "name": "icon_check",
+      "value": "✓"
+    },
+    {
+      "name": "lists_new_action",
+      "value": "+ NEW LIST"
+    },
+    {
+      "name": "icon_rename",
+      "value": "✎"
+    },
+    {
+      "name": "list_name_new_title",
+      "value": "NEW LIST"
+    },
+    {
+      "name": "list_name_rename_title",
+      "value": "RENAME LIST"
+    },
+    {
+      "name": "list_name_empty",
+      "value": "Name can't be empty"
+    },
+    {
+      "name": "action_save",
+      "value": "SAVE"
+    },
+    {
+      "name": "action_cancel",
+      "value": "CANCEL"
+    },
+    {
+      "name": "item_title_empty",
+      "value": "Title can't be empty"
+    },
+    {
+      "name": "item_new_placeholder",
+      "value": "New item"
+    },
+    {
+      "name": "action_add",
+      "value": "ADD"
+    },
+    {
+      "name": "icon_delete",
+      "value": "✕"
+    },
+    {
+      "name": "action_delete",
+      "value": "DELETE"
+    },
+    {
+      "name": "confirm_list_message",
+      "value": "Delete \"%s\" and its %d items?"
+    },
+    {
+      "name": "confirm_item_message",
+      "value": "Delete \"%s\"?"
+    },
+    {
+      "name": "error_generic",
+      "value": "Something went wrong"
     }
   ]
 }

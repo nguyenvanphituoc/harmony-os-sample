@@ -1,0 +1,9 @@
+# Groceries: open items first, Buy milk last and marked done
+launch
+tap text "Groceries"
+expect id "list.title"
+expect count id "list.itemCard" 3
+expect order text "Bread" "Buy eggs"
+expect order text "Buy eggs" "Buy milk"
+expect count id "item.done" 1
+expect no text "Book meeting room"

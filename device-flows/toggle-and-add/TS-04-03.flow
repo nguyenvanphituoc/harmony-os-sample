@@ -1,0 +1,11 @@
+# ADD on an empty field shows the error and keeps the text
+launch
+tap text "Groceries"
+tap id "list.addButton"
+expect text "Title can't be empty"
+expect id "list.newItemError"
+expect count id "list.itemCard" 3
+type id "list.newItemField" "  "
+tap id "list.addButton"
+expect text "Title can't be empty"
+expect count id "list.itemCard" 3

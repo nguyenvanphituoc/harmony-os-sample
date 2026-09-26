@@ -1,0 +1,12 @@
+# Cold start shows the three seeded cards, newest first
+launch
+expect text "MY LISTS"
+expect count id "lists.card" 3
+expect text "Groceries"
+expect text "1/3 done"
+expect text "Work"
+expect text "1/2 done"
+expect text "Weekend"
+expect text "No items"
+expect order text "Groceries" "Work"
+expect order text "Work" "Weekend"

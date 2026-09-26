@@ -1,0 +1,7 @@
+# Weekend opens to the empty invitation
+launch
+tap text "Weekend"
+expect text "No items yet"
+expect text "Add your first item above"
+expect id "list.emptyInvite"
+expect id "list.backButton"

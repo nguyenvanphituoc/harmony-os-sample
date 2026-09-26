@@ -1,0 +1,16 @@
+# With no lists P1 shows the invitation and CREATE YOUR FIRST LIST, never a blank screen
+launch
+tap id "lists.deleteButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+tap id "lists.deleteButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+tap id "lists.deleteButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+expect text "No lists yet"
+expect text "CREATE YOUR FIRST LIST"

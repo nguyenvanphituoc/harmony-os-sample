@@ -1,0 +1,9 @@
+# Adding to the empty Weekend list replaces the invitation with the card
+launch
+tap text "Weekend"
+expect text "No items yet"
+type id "list.newItemField" "Hike"
+tap id "list.addButton"
+expect text "Hike"
+expect no text "No items yet"
+expect count id "list.itemCard" 1

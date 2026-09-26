@@ -3,6 +3,38 @@
     {
       "name": "start_window_background",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "background",
+      "value": "#FFF4E0"
+    },
+    {
+      "name": "surface",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "surfaceDone",
+      "value": "#F2E8D5"
+    },
+    {
+      "name": "ink",
+      "value": "#1A1A1A"
+    },
+    {
+      "name": "inkMuted",
+      "value": "#5E5242"
+    },
+    {
+      "name": "brand",
+      "value": "#FFD23F"
+    },
+    {
+      "name": "danger",
+      "value": "#C1121F"
+    },
+    {
+      "name": "onDanger",
+      "value": "#FFFFFF"
     }
   ]
 }

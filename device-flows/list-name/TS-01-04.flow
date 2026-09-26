@@ -1,0 +1,10 @@
+# A new list appears as the first card on P1
+launch
+tap id "lists.newButton"
+wait 500
+expect text "NEW LIST"
+type id "listName.field" "Travel"
+tap id "listName.saveButton"
+wait 500
+expect count id "lists.card" 4
+expect order text "Travel" "Groceries"

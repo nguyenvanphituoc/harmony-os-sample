@@ -1,0 +1,12 @@
+# Tapping the X opens the dialog and does not toggle the item
+launch
+tap text "Groceries"
+wait 500
+expect count id "item.done" 1
+tap id "list.deleteItemButton" 1
+wait 500
+expect id "confirm.message"
+tap id "confirm.cancelButton"
+wait 500
+expect count id "item.done" 1
+expect count id "item.open" 2

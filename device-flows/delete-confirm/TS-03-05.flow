@@ -1,0 +1,19 @@
+# After deleting every list P1 shows the empty invitation and CREATE YOUR FIRST LIST opens the name dialog
+launch
+tap id "lists.deleteButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+tap id "lists.deleteButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+tap id "lists.deleteButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+expect text "No lists yet"
+expect id "lists.newButton"
+tap id "lists.newButton"
+wait 500
+expect text "NEW LIST"

@@ -25,9 +25,21 @@ is void here.
 | `build_probe` | `./scripts/t0-assemble.sh` | committed fixture, grant-covered, **executed green on this branch** — `BUILD SUCCESSFUL in 4 s 292 ms`, house rules running, HAP unsigned (`signingConfigs` is `[]`) |
 | `launch_probe` | `./scripts/launch-probe.sh` | committed fixture, one grantable command, **executed green on this branch**: target `127.0.0.1:5555`, the unsigned HAP installs, `start ability successfully`, process alive, no new faultlog, and a `uitest dumpLayout` tree with exactly one text node — `[Text] Hello World`, the template |
 
+## Working tree at the 2026-09-27 run open — read before trusting the baseline below
+
+The section below describes the **committed baseline** (`HEAD`), not the working tree. The tree this run
+opened on is not clean: it carries the previous run's uncommitted output — modified `EntryAbility.ets`,
+`pages/Index.ets`, `color.json`, `float.json`, `string.json` and `test/List.test.ets`; new
+`ets/features/`, `ets/shared/`, nine `src/test/*.test.ets` files, `device-flows/`, and a frozen
+`shapeup/retro-todo/REPORT.md` with `hill/` shards. The pitch's baseline (the template) is still the
+baseline the pitch and spec are measured against, so a worker must read `git diff HEAD` and the untracked
+paths as **existing code to converge on**, not as the template; "no `features/`, no `shared/`" below is
+true of `HEAD` only. Measured at open: a device is attached (`hdc list targets` → `127.0.0.1:5555`), so
+the launch probe and the QA hunt can run; `app/local.properties` resolves `hwsdk.dir` and `arkui-x.dir`.
+
 ## The baseline is the pitch's baseline
 
-Measured on this branch, and matching the pitch's Baseline section:
+Measured on the committed baseline, and matching the pitch's Baseline section:
 
 - `pages/Index.ets` is the template's V1 `@Entry @Component` showing "Hello World"; `EntryAbility.ets`
   loads it through `main_pages.json`.

@@ -1,0 +1,13 @@
+# One tap toggles a card, the P1 count follows, the card is in its new place at once
+launch
+expect text "1/3 done"
+tap text "Groceries"
+expect order text "Bread" "Buy eggs"
+tap text "Bread"
+expect order text "Buy eggs" "Bread"
+expect count id "item.done" 2
+tap text "Bread"
+expect order text "Bread" "Buy eggs"
+expect count id "item.done" 1
+back
+expect text "1/3 done"

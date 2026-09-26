@@ -1,0 +1,10 @@
+# Back (button and system Back) returns to the lists screen with its cards already showing
+launch
+tap text "Groceries"
+tap id "list.backButton"
+expect text "MY LISTS"
+expect count id "lists.card" 3
+tap text "Work"
+back
+expect text "MY LISTS"
+expect count id "lists.card" 3

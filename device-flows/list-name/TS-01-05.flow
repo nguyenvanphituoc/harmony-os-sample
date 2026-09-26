@@ -1,0 +1,8 @@
+# SAVE with an empty field shows the error and the dialog stays
+launch
+tap id "lists.newButton"
+wait 500
+tap id "listName.saveButton"
+wait 500
+expect text "Name can't be empty"
+expect text "NEW LIST"

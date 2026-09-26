@@ -1,0 +1,16 @@
+# CANCEL keeps the item; DELETE removes it
+launch
+tap text "Groceries"
+wait 500
+expect count id "list.itemCard" 3
+tap id "list.deleteItemButton" 1
+wait 500
+expect id "confirm.message"
+tap id "confirm.cancelButton"
+wait 500
+expect count id "list.itemCard" 3
+tap id "list.deleteItemButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+expect count id "list.itemCard" 2

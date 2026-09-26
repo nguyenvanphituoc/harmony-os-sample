@@ -1,0 +1,16 @@
+# CANCEL in the delete dialog keeps the list and its items
+launch
+tap id "lists.deleteButton" 1
+wait 500
+expect id "confirm.message"
+tap id "confirm.cancelButton"
+wait 500
+expect no id "confirm.message"
+expect count id "lists.card" 3
+expect text "Groceries"
+tap id "lists.deleteButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+expect count id "lists.card" 2
+expect no text "Groceries"

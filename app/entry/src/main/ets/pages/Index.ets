@@ -1,20 +1,43 @@
+import { NavPort } from '../shared/kernel/NavPort';
+import { TodoModule } from '../features/todo/TodoModule';
+import { ListsPage } from '../features/todo/screens/lists/ListsPage';
+import { ListPage } from '../features/todo/screens/list/ListPage';
+
+class NavStackPort implements NavPort {
+  private stack: NavPathStack;
+
+  constructor(stack: NavPathStack) {
+    this.stack = stack;
+  }
+
+  push(name: string, param: string): void {
+    this.stack.pushPathByName(name, param);
+  }
+
+  pop(): void {
+    this.stack.pop();
+  }
+}
+
 @Entry
-@Component
+@ComponentV2
 struct Index {
-  @State message: string = 'Hello World';
+  private stack: NavPathStack = new NavPathStack();
+  private todo: TodoModule = new TodoModule(new NavStackPort(this.stack));
+
+  @Builder
+  routes(name: string, param: Object) {
+    if (name === 'List') {
+      ListPage({ vm: this.todo.listViewModel(param as string) })
+    }
+  }
 
   build() {
-    Row() {
-      Column() {
-        Text(this.message)
-          .fontSize($r('app.float.page_text_font_size'))
-          .fontWeight(FontWeight.Bold)
-          .onClick(() => {
-            this.message = 'Welcome';
-          })
-      }
-      .width('100%')
+    Navigation(this.stack) {
+      ListsPage({ vm: this.todo.listsViewModel() })
     }
-    .height('100%')
+    .hideTitleBar(true)
+    .mode(NavigationMode.Stack)
+    .navDestination(this.routes)
   }
 }

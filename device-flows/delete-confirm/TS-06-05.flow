@@ -1,0 +1,17 @@
+# Deleting the last item shows the empty invitation
+launch
+tap text "Groceries"
+wait 500
+tap id "list.deleteItemButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+tap id "list.deleteItemButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+tap id "list.deleteItemButton" 1
+wait 500
+tap id "confirm.deleteButton"
+wait 500
+expect text "No items yet"
