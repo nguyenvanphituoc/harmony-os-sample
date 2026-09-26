@@ -88,7 +88,7 @@ export struct ListsPage {
     EmptyState({
       message: $r('app.string.lists_empty_title'),
       actionLabel: $r('app.string.lists_empty_action'),
-      actionTestId: 'lists.newButton',
+      actionTestId: 'lists.emptyInvite',
       onAction: () => {
         this.vm.onNew();
       }

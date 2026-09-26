@@ -13,7 +13,7 @@ wait 500
 tap id "confirm.deleteButton"
 wait 500
 expect text "No lists yet"
-expect id "lists.newButton"
-tap id "lists.newButton"
+expect id "lists.emptyInvite"
+tap id "lists.emptyInvite"
 wait 500
 expect text "NEW LIST"

@@ -1,8 +1,15 @@
-# A done card is drawn as done: the seeded done item carries the done marker, an open one does not
+# A done card is drawn as done: the done marker and the checked box (check glyph) appear together, an open card has neither
+# Strikethrough and inkMuted-on-surfaceDone are set in ItemCard.ets (LineThrough decoration, inkMuted font, RetroCard done) and are not readable from the layout tree
 launch
 tap text "Groceries"
 expect count id "item.done" 1
+expect count text "✓" 1
+expect count id "item.open" 2
 tap text "Bread"
 expect count id "item.done" 2
+expect count text "✓" 2
+expect count id "item.open" 1
 tap text "Bread"
 expect count id "item.done" 1
+expect count text "✓" 1
+expect count id "item.open" 2

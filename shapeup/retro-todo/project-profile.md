@@ -9,79 +9,76 @@ launch_probe: "./scripts/launch-probe.sh"
 
 # Project profile — retro-todo
 
-Re-derived on 2026-09-26 for branch `soak/retro-todo-3`, cut from `main` (the untouched DevEco
-template) with the harness infrastructure carried over and no feature code: the T0 fixture scripts
-and the launch probe, the permission grant, the knowledge base, `docs/`, and the build-enforced house
-rules (`app/build-src/enforce`, wired from both hvigorfiles). `app/entry/src/main/` is byte-identical
-to `main`. Every field below was measured on this branch, not carried from the previous profile — that
-one described a branch that already held hero-todo's feature, and every consequence it drew from that
-is void here.
+Re-derived on 2026-09-27 for branch `soak/retro-todo-4`. Every field below was measured on this
+checkout at this run's open, not carried from the previous profile. The previous profile described a
+tree that carried the prior run's output uncommitted; that output has since been committed, so `HEAD`
+now holds the feature and the old "no `features/`, no `shared/`" statements are void.
 
 | Key | Value | Where it comes from |
 |-----|-------|---------------------|
 | `archetype` | `mobile` | one `entry` HAP, `"type": "entry"`, `deviceTypes: ["phone"]` — `app/entry/src/main/module.json5` |
 | `entry_point` | `app/entry/src/main/ets/entryability/EntryAbility.ets` | `module.json5` → `abilities[0].srcEntry` |
 | `stack` | above | `app/build-profile.json5`, `app/oh-package.json5`, `app/hvigorfile.ts`, `app/.arkui-x/arkui-x-config.json5` |
-| `build_probe` | `./scripts/t0-assemble.sh` | committed fixture, grant-covered, **executed green on this branch** — `BUILD SUCCESSFUL in 4 s 292 ms`, house rules running, HAP unsigned (`signingConfigs` is `[]`) |
-| `launch_probe` | `./scripts/launch-probe.sh` | committed fixture, one grantable command, **executed green on this branch**: target `127.0.0.1:5555`, the unsigned HAP installs, `start ability successfully`, process alive, no new faultlog, and a `uitest dumpLayout` tree with exactly one text node — `[Text] Hello World`, the template |
+| `build_probe` | `./scripts/t0-assemble.sh` | committed fixture, grant-covered, **executed green at this open** — `BUILD SUCCESSFUL in 3 s 143 ms` (incremental, mostly UP-TO-DATE), house rules running, HAP unsigned (`signingConfigs` is `[]`) |
+| `launch_probe` | `./scripts/launch-probe.sh` | committed fixture, one grantable command, **executed green at this open**: target `127.0.0.1:5555`, the unsigned HAP installs, `start ability successfully`, pid alive, and a `uitest dumpLayout` tree with 14 text nodes — `MY LISTS`, `+ NEW LIST`, and three seeded list cards (`Groceries` 1/3 done, `Work` 1/2 done, `Weekend` No items) each with `✎` / `✕` |
 
-## Working tree at the 2026-09-27 run open — read before trusting the baseline below
+## State of the tree at run open — the baseline is no longer the template
 
-The section below describes the **committed baseline** (`HEAD`), not the working tree. The tree this run
-opened on is not clean: it carries the previous run's uncommitted output — modified `EntryAbility.ets`,
-`pages/Index.ets`, `color.json`, `float.json`, `string.json` and `test/List.test.ets`; new
-`ets/features/`, `ets/shared/`, nine `src/test/*.test.ets` files, `device-flows/`, and a frozen
-`shapeup/retro-todo/REPORT.md` with `hill/` shards. The pitch's baseline (the template) is still the
-baseline the pitch and spec are measured against, so a worker must read `git diff HEAD` and the untracked
-paths as **existing code to converge on**, not as the template; "no `features/`, no `shared/`" below is
-true of `HEAD` only. Measured at open: a device is attached (`hdc list targets` → `127.0.0.1:5555`), so
-the launch probe and the QA hunt can run; `app/local.properties` resolves `hwsdk.dir` and `arkui-x.dir`.
+The pitch's Baseline section measures against the untouched DevEco template, and the spec and scope
+contracts are still measured against that. The checkout is not the template. `HEAD` already holds a
+committed implementation from an earlier from-scratch run, so a worker reads the tree as **existing code
+to converge on**, and the round's work is to verify it against the spec and repair what does not
+conform — not to write it from nothing.
 
-## The baseline is the pitch's baseline
+- `app/entry/src/main/ets/` holds `entryability/`, `pages/Index.ets`, `features/todo/` (`TodoModule.ets`,
+  `domain/` with the use-case files, repository, rules and `TodoStore.ets`, and `screens/` with `confirm/`,
+  `list/`, `listname/`, `lists/`) and `shared/` (`kernel/`, `uikit/` with the `Retro*` components).
+- `app/entry/src/test/` holds eleven `*.test.ets` files; `app/entry/src/ohosTest/` exists; `scripts/`
+  holds `t0-assemble.sh`, `t0-test.sh`, `launch-probe.sh` and `ui-flow.sh`.
+- `module.json5` still declares no `routerMap` and no `appStartup`; `resources/base/profile/` holds only
+  `main_pages.json` — no `route_map.json`, no `startup_config.json`. The pitch's RH1 bound (no route file,
+  no AppStartup task, no `module.json5` change) is met and stays the zero-change option.
+- `app/.arkui-x/` is present and `arkui-x-config.json5` says `crossplatform: true`, so an API without the
+  SDK's `@crossplatform` tag fails `CompileArkTS` with 11706007.
+- The committed spec is at `shapeup/retro-todo/spec/` with four scope contracts (`delete-confirm`,
+  `list-name`, `lists-and-open`, `toggle-and-add`), `requirements.md` (28 `REQ-<n>` rows), `wiring-map.md`
+  and a frozen `REPORT.md` from the previous run. The spec tree carries no `tasks/`, so `verify spec`
+  reads zero tasks and reports every requirement as `REQ-UNCOVERED` (28 red) until ANALYZE writes the
+  board and its acceptance criteria — that is the expected pre-ANALYZE reading, not a spec defect.
 
-Measured on the committed baseline, and matching the pitch's Baseline section:
-
-- `pages/Index.ets` is the template's V1 `@Entry @Component` showing "Hello World"; `EntryAbility.ets`
-  loads it through `main_pages.json`.
-- `module.json5` declares no `routerMap` and no `appStartup`; there is no `route_map.json`, no
-  `startup_config.json`, no `ets/appstartup/`.
-- `app/entry/src/main/ets/` holds only `entryability/` and `pages/` — no
-  `features/`, no `shared/`.
-- `app/.arkui-x/` is present and `arkui-x-config.json5` says `crossplatform: true`, so the pitch's
-  constraint is live: an API without the SDK's `@crossplatform` tag fails `CompileArkTS` with 11706007.
-
-The pitch's RH1 bound — no `route_map.json`, no AppStartup task, no change to `module.json5` — is
-therefore the zero-change option here, not a removal.
-
-## House rules: what bites on this baseline
+## House rules: what bites
 
 `app/build-src/enforce/rule-table.ts` runs at hvigorfile module-evaluation time, so one error-level hit
 reds **every** hvigor target before any task runs (L1–L9 `error`, L10–L11 `warning`).
 
 - **L6 is inert while there is no `route_map.json`.** Its check returns no finding when that file is
-  absent (`app/build-src/enforce/scan.ts:155`). A builder route table inside `pages/Index.ets` is the
-  navigation design that needs no route file, and a screen named `*Page.ets` declaring a
-  `@Builder function` trips nothing. Creating `route_map.json` would arm L6 in both directions *and*
-  require a `module.json5` change the pitch forbids — so no scope should create it.
+  absent (`app/build-src/enforce/scan.ts:155`). Creating `route_map.json` would arm L6 in both directions
+  *and* require a `module.json5` change the pitch forbids — so no scope should create it.
 - **L1** forbids hex literals in any `.ets`, comments included: the retro palette goes in `color.json`
   and is read through `$r('app.color.…')`. **L3** forbids quoted literals in `Text(…)`, `.label(…)`,
   `.placeholder(…)`: every visible string goes through `string.json`. **L8** forbids `LazyForEach` (use
   `Repeat`). **L9** forbids `@Provider`/`@Consumer`. **L7** forbids `getStringSync(`. **L10** warns on a
   raw dimension literal outside `shared/uikit`.
 
-## Concurrency consequence for MAP SCOPES at GATE L1b
+## Concurrency consequence for BUILD
 
-`color.json`, `float.json`, `string.json` and `pages/Index.ets` are each one file edited
-read-modify-write. Each must appear in exactly **one** scope's `allowed_file_substrate`, or the scopes
-that share it serialise regardless of `--parallel-scopes`. That is a reason to give each resource file
-an owner, not a reason to collapse the feature into one scope.
+The committed scope contracts overlap: `verify spec` reports `SHARED-CONCURRENT` between
+`delete-confirm` and each of `list-name` and `lists-and-open` (and others) on `TodoModule.ets`,
+`ListsPage.ets`, `ListsViewModel.ets`, `string.json` and both `List.test.ets` files. Two scopes that both
+declare a write to one path never build at the same time, so BUILD runs those scopes one at a time
+whatever `--parallel-scopes` says. The ceiling is the BUILD-order line's to state; re-cutting the scopes
+so exactly one owns each of those files is the only fix, and it is a scope-cut decision for L1b, not a
+dial.
 
 ## Verification tiers available at T0 and in the round build gate
 
-- `./scripts/t0-assemble.sh` — `assembleHap` with the house rules, green at baseline.
-- `./scripts/t0-test.sh` — `hvigorw test` unit tier, green at baseline on the template's own tests. A new
-  `*.test.ets` runs only if `app/entry/src/test/List.test.ets` imports it.
-- `./scripts/launch-probe.sh` — install, start, liveness, faultlog delta and the live UI tree
-  (written beside the run trace as `layout.json` and `screen.png`). It exits 2, not 1, when no device is attached, so
-  a missing emulator reads as an environment gap rather than a failing feature. The pitch's "launches on
-  the emulator" done-criterion is gradeable on this machine.
+- `./scripts/t0-assemble.sh` — `assembleHap` with the house rules, **green at this open**.
+- `./scripts/t0-test.sh` — `hvigorw test` unit tier, **green at this open** (`BUILD SUCCESSFUL in 4 s
+  177 ms`). A new `*.test.ets` runs only if `app/entry/src/test/List.test.ets` imports it.
+- `./scripts/launch-probe.sh` — install, start, liveness, faultlog delta and the live UI tree (written
+  beside the run trace as `layout.json` and `screen.png`). It exits 2, not 1, when no device is attached,
+  so a missing emulator reads as an environment gap rather than a failing feature. A device is attached
+  at this open (`hdc list targets` → `127.0.0.1:5555`), so the pitch's "launches on the emulator"
+  done-criterion is gradeable, and the QA hunt can run.
+- `app/entry/src/ohosTest` fixtures need a signed HAP; `signingConfigs` is `[]`, so they go red for an
+  environment reason no scope owns.

@@ -29,6 +29,7 @@ export struct ItemCard {
             .layoutWeight(1)
         }
         .layoutWeight(1)
+        .id('list.itemCard.toggle')
         .onClick(() => {
           this.onToggle();
         })

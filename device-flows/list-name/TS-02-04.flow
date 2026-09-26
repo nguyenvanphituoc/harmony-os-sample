@@ -3,8 +3,8 @@ launch
 tap id "lists.renameButton" 1
 wait 500
 expect text "RENAME LIST"
-expect text "Groceries"
+expect count text "Groceries" 2
 tap id "listName.cancelButton"
 wait 500
 expect no text "RENAME LIST"
-expect text "Groceries"
+expect count text "Groceries" 1
