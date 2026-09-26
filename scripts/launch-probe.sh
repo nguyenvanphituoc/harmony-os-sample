@@ -25,6 +25,14 @@ OUT="${OUT:-.shapeup/launch-probe}"
 
 [ -x "$HDC" ] || { echo "LAUNCH-PROBE-CANNOT-RUN: hdc not executable at $HDC" >&2; exit 2; }
 [ -f "$HAP" ] || { echo "LAUNCH-PROBE-CANNOT-RUN: no HAP at $HAP — run the build probe first" >&2; exit 2; }
+# A HAP OLDER THAN THE SOURCE IS NOT THIS BUILD. When the build fails, the previous HAP is still on
+# disk, and installing it launches whatever last built — a green launch over a red build. Any source
+# file newer than the HAP means the artifact does not describe the tree, so the probe cannot run.
+newer=$(find app/entry/src/main app/AppScope -type f -newer "$HAP" 2>/dev/null | head -1)
+if [ -n "$newer" ]; then
+  echo "LAUNCH-PROBE-CANNOT-RUN: $HAP is older than the source ($newer) — build it first; a stale HAP launches the last build, not this one" >&2
+  exit 2
+fi
 
 target=$("$HDC" list targets 2>/dev/null | head -1 | tr -d '\r')
 case "$target" in

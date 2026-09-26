@@ -1163,3 +1163,18 @@ run resumed after an abort) is unchanged. Until a release, this checkout still r
 This checkout is repointed to 3.10.0 at project scope. The next run's evaluate order carries
 `build_gate` and `launch_cmd` without anyone pinning a `run_cmd`, and `probe t0` prints the digest.
 HD-18 remains open.
+
+## HD-16 — resolved: workflow sub-agents take grants from the settings file, not from launch flags
+
+Measured on run `retro-todo-20260926T090044Z-3d1928c9` (plugin 3.10.0, Sonnet throughout). With
+`Bash(shasum:*)` in `.claude/settings.json`, every evaluator sub-agent recomputed all four T0
+digests itself. With `hdc` granted only through the launch's `--allowedTools`, the same sub-agents
+reported "no UI driver was available" and graded every device row past the first screen NO EVIDENCE
+— 4 rows in round 2, 17 in round 3 — with `bugs: []`, so the fix rounds had nothing to fix. A
+top-level session given the same flag drove the app with `hdc … uitest` without complaint.
+
+So a grant that an unattended run's workers need must live in the project's settings file; a launch
+flag reaches the orchestrating session only. `hdc` was added to this checkout's `permissions.allow`
+on 2026-09-26 (PO decision). The plugin still has no way to tell a run, before it spends a round,
+that its judge cannot drive the app: the Preflight canary runs the probes from a sub-agent, but a
+probe that only launches cannot show that the evaluator could not go further.
