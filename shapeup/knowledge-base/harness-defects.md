@@ -1197,3 +1197,17 @@ carries `covers:`; REQ-15 (`vi_VN` strings with the same keys as base) is unmet 
 because only `resources/base` exists; and the board stood at 6/10 when EVAL ran. A per-row verdict is
 what makes the matrix, the bug routing and the rewritten-check list work, so an aggregate criterion
 switches off all three without any error.
+
+## HD-20 — resolved in plugin 3.16.0 (2026-09-27)
+A PASS now names every Test Surface row. A grouped PASS is refused on ingest and by `probe eval`, and
+the judge is sent back once. Run `retro-todo-20260927T063004Z-4db8f5ed` (receipt 3.16.0, Sonnet): the
+judge graded 42 criteria, one per row, on its first dispatch, so the refusal did not have to fire.
+The requirements matrix went from 0/28 to 22/28. The six without evidence are REQ-11/12/25/26
+(card contrast tokens), REQ-27 (in-memory persistence) and REQ-15 (`vi_VN` strings; no such resource
+exists). They are weighed at GATE H rather than vetoed.
+
+## HD-19 — did not reproduce on 3.16.0; the gap stays open
+On the same run the hunt ran 3/3 charters on the emulator and recorded two findings: QA-101, an
+unbounded list name fills the screen, and QA-102, a double-tap on one item row toggles three items
+done. So the zero-charter hunt on 3.15.1 was model variance. Nothing yet requires a hunt over a
+reachable app to draft a charter, and the run's QA ledger row still says `run` whatever the count.

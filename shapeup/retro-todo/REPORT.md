@@ -1,11 +1,11 @@
 ---
 type: ship-report
 feature: retro-todo
-date: 2026-09-26
+date: 2026-09-27
 verdict: PASS
 rounds_used: 1
 rounds_judged: 1
-qa: not-hunted
+qa: run
 intake_sha256: 3bcc3493c9e94b991ed58af6996b5098d2701bd3dced631b8187bf0618a140d3
 ---
 
@@ -21,12 +21,9 @@ ledger, the verdict artifacts, the board — never from a summary of the run.
 | Verdict | **PASS** |
 | Rounds used | 1 |
 | Rounds judged | 1 |
-| Board | 6/10 tasks done |
+| Board | 8/8 tasks done |
 | T0 artifacts | 4 |
-| QA | not-hunted |
-
-> **4 task(s) did not finish** — use cases: UC-07, UC-08.
-> The verdict above grades what was built, not what was planned.
+| QA | run |
 
 ## Verification (T0)
 
@@ -45,38 +42,38 @@ One row per registered clause. A requirement has evidence when an acceptance cri
 covers it AND a criterion grading it passed — `covers:` is the join, the judge's anchor is the
 path back. This is a projection, never a verdict: it never blocked this ship.
 
-**0/28 PASS · 28 no evidence (REQ-0 ← shapeup/retro-todo/shaping/shaping.md R0, REQ-1 ← shapeup/retro-todo/shaping/shaping.md R1, REQ-17 ← shapeup/retro-todo/shaping/shaping.md R1 (split 2/3), …)** · run `retro-todo-20260926T204952Z-ea80c642`
+**22/28 PASS · 6 no evidence (REQ-11 ← shapeup/retro-todo/shaping/shaping.md R11, REQ-25 ← shapeup/retro-todo/shaping/shaping.md R11 (split 2/2), REQ-12 ← shapeup/retro-todo/shaping/shaping.md R12, …)** · run `retro-todo-20260927T063004Z-4db8f5ed`
 
 | REQ | source | evidence | covering AC | criterion | T0 |
 |---|---|---|---|---|---|
-| REQ-0 | shapeup/retro-todo/shaping/shaping.md R0 | no evidence | UC-03: After deleting every list P1 shows "No lists yet" and "CREATE YOUR FIRST LIST", never a blank screen; tapping it opens the name dialog (covers: REQ-0) | — | — |
-| REQ-1 | shapeup/retro-todo/shaping/shaping.md R1 | no evidence | UC-01: "+ NEW LIST" opens the dialog titled "NEW LIST"; SAVE with "Travel" adds a Travel card as the first card (TS-01-04) (covers: REQ-1) | — | — |
-| REQ-17 | shapeup/retro-todo/shaping/shaping.md R1 (split 2/3) | no evidence | UC-07/UC-08: `TodoRules.checkListName` and `checkItemTitle` trim and return `Err` for blank input, with unit rows in `TodoRules.test.ets` (TS-01-01, TS-01-03) (covers: REQ-17, REQ-20) (+1) | — | — |
-| REQ-18 | shapeup/retro-todo/shaping/shaping.md R1 (split 3/3) | no evidence | UC-01: Creating "Travel" twice yields two lists with the same name (TS-01-02) (covers: REQ-18) | — | — |
-| REQ-2 | shapeup/retro-todo/shaping/shaping.md R2 | no evidence | UC-07: Cold start shows MY LISTS with Groceries "1/3 done", Work "1/2 done", Weekend "No items", newest-created first, verified by the flow under `device-flows/lists-and-open/` via `./scripts/ui-flow.sh device-flows/lists-and-open` (TS-07 device rows) (covers: REQ-2) | — | — |
-| REQ-3 | shapeup/retro-todo/shaping/shaping.md R3 | no evidence | UC-07/UC-08: Items of Work never appear in the item list of Groceries (TS-08-03) (covers: REQ-3) (+1) | — | — |
-| REQ-4 | shapeup/retro-todo/shaping/shaping.md R4 | no evidence | UC-03: ✕ on Groceries opens `Delete "Groceries" and its 2 items?`; DELETE removes the list and its items, CANCEL keeps both (covers: REQ-4) | — | — |
-| REQ-16 | shapeup/retro-todo/shaping/shaping.md R16 | no evidence | UC-02: ✎ on a card opens "RENAME LIST" with the current name pre-filled; SAVE with "Trips" renames the list and its items stay (covers: REQ-16) | — | — |
-| REQ-19 | shapeup/retro-todo/shaping/shaping.md R16 (split 2/2) | no evidence | UC-02: SAVE with an empty or whitespace-only value shows "Name can't be empty" at the field and keeps the old name (covers: REQ-19) | — | — |
-| REQ-5 | shapeup/retro-todo/shaping/shaping.md R5 | no evidence | UC-04: Typing "Hike" and tapping ADD (or the keyboard submit) adds a card, newest first among the open items, and the empty invitation disappears (covers: REQ-5) | — | — |
-| REQ-20 | shapeup/retro-todo/shaping/shaping.md R5 (split 2/2) | no evidence | UC-07/UC-08: `TodoRules.checkListName` and `checkItemTitle` trim and return `Err` for blank input, with unit rows in `TodoRules.test.ets` (TS-01-01, TS-01-03) (covers: REQ-17, REQ-20) (+1) | — | — |
-| REQ-6 | shapeup/retro-todo/shaping/shaping.md R6 | no evidence | UC-05: One tap anywhere on an item card flips its done state; `ToggleItem("missing")` returns `Err(ITEM_NOT_FOUND)` (TS-05-06) (covers: REQ-6) | — | — |
-| REQ-7 | shapeup/retro-todo/shaping/shaping.md R7 | no evidence | UC-07/UC-08: `ItemOrder.sort` puts every done item after every open item and orders each group by `createdAt` descending; `hvigorw test -p module=entry -p coverage=false` runs `ItemOrder.test.ets` green (TS-05-01, TS-05-02) (covers: REQ-7, REQ-21) (+1) | — | — |
-| REQ-21 | shapeup/retro-todo/shaping/shaping.md R7 (split 2/4) | no evidence | UC-07/UC-08: `ItemOrder.sort` puts every done item after every open item and orders each group by `createdAt` descending; `hvigorw test -p module=entry -p coverage=false` runs `ItemOrder.test.ets` green (TS-05-01, TS-05-02) (covers: REQ-7, REQ-21) (+2) | — | — |
-| REQ-22 | shapeup/retro-todo/shaping/shaping.md R7 (split 3/4) | no evidence | UC-05: Marking Bread done places it in the done group before Buy milk and leaves Buy eggs alone in the open group (TS-05-04) (covers: REQ-22) | — | — |
-| REQ-23 | shapeup/retro-todo/shaping/shaping.md R7 (split 4/4) | no evidence | UC-05: Toggling Bread done then not done returns it above Buy eggs (TS-05-03) (covers: REQ-23) | — | — |
-| REQ-8 | shapeup/retro-todo/shaping/shaping.md R8 | no evidence | UC-08: A done item carries the state id `item.done` and a checked box; an open item carries `item.open` (TS-05-05); the strike-through and colour change are checked by eye at sign-off (covers: REQ-8, REQ-24) (+1) | — | — |
-| REQ-24 | shapeup/retro-todo/shaping/shaping.md R8 (split 2/2) | no evidence | UC-08: A done item carries the state id `item.done` and a checked box; an open item carries `item.open` (TS-05-05); the strike-through and colour change are checked by eye at sign-off (covers: REQ-8, REQ-24) (+1) | — | — |
-| REQ-9 | shapeup/retro-todo/shaping/shaping.md R9 | no evidence | UC-06: ✕ on Buy milk opens `Delete "Buy milk"?`; CANCEL keeps it, DELETE removes it (covers: REQ-9) | — | — |
-| REQ-10 | shapeup/retro-todo/shaping/shaping.md R10 | no evidence | UC-08: Weekend opens to "No items yet" and "Add your first item above" with id `list.emptyInvite` (TS-08-04) (covers: REQ-10) (+1) | — | — |
-| REQ-11 | shapeup/retro-todo/shaping/shaping.md R11 | no evidence | UC-07/UC-08: `RetroCard` is the single card primitive with `surface` and `surfaceDone` variants, so a list and an item each render as their own card (covers: REQ-11, REQ-25) (+1) | — | — |
-| REQ-25 | shapeup/retro-todo/shaping/shaping.md R11 (split 2/2) | no evidence | UC-07/UC-08: `RetroCard` is the single card primitive with `surface` and `surfaceDone` variants, so a list and an item each render as their own card (covers: REQ-11, REQ-25) (+1) | — | — |
-| REQ-12 | shapeup/retro-todo/shaping/shaping.md R12 | no evidence | UC-07/UC-08: Every text/background pair used (`ink` on `surface`, `inkMuted` on `surfaceDone`, `onDanger` on `danger`) has a contrast ratio of at least 4.5:1, computed by a script and printed (covers: REQ-12) | — | — |
-| REQ-26 | shapeup/retro-todo/shaping/shaping.md R12 (split 2/2) | no evidence | UC-07/UC-08: The card border (`ink` on `background`) and the `RetroCheck` box have a contrast ratio of at least 3:1, computed by a script and printed (covers: REQ-26) | — | — |
-| REQ-13 | shapeup/retro-todo/shaping/shaping.md R13 | no evidence | UC-07/UC-08: `color.json` defines `background`, `surface`, `surfaceDone`, `ink`, `inkMuted`, `brand`, `danger`, `onDanger`; `float.json` defines border 2vp, shadow offset 4vp, radius, spacing, font sizes and minimum touch target; no screen hard-codes a colour or size (covers: REQ-13) | — | — |
-| REQ-14 | shapeup/retro-todo/shaping/shaping.md R14 | no evidence | UC-07/UC-08: `seed()` yields Groceries (Buy milk done, Buy eggs, Bread), Work (Book meeting room done, Send weekly report), Weekend (no items); a cold start always begins from this same data (TS-08-01, TS-08-02) (covers: REQ-14) (+1) | — | — |
-| REQ-27 | shapeup/retro-todo/shaping/shaping.md R14 (split 2/2) | no evidence | UC-07/UC-08: The repository holds data in memory only: no file, preferences or database API is imported by `InMemoryTodoRepository.ts`; a fresh instance re-seeds identically, so nothing survives a restart (D1 INV in UC-07) (covers: REQ-27) | — | — |
-| REQ-15 | shapeup/retro-todo/shaping/shaping.md R15 | no evidence | UC-07/UC-08: Every visible string lives in `resources/base/element/string.json` in English, with the same keys and Vietnamese values in `vi_VN/element/string.json`, and a diff of the two key sets is empty (KB-BA-006) (covers: REQ-15) | — | — |
+| REQ-0 | shapeup/retro-todo/shaping/shaping.md R0 | PASS | UC-07: With no lists, `status` is Empty (TS-07-03) and P1 shows "No lists yet" with (+1) | TS-07-03 (+1) → PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-1 | shapeup/retro-todo/shaping/shaping.md R1 | PASS | UC-01/UC-02: "+ NEW LIST" (`lists.newButton`) or "CREATE YOUR FIRST LIST" (`lists.emptyInvite`) opens | TS-01-04 → PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-17 | shapeup/retro-todo/shaping/shaping.md R1 (split 2/3) | PASS | UC-07/UC-08: `checkListName("")` and `("   ")` return `Err(LIST_NAME_EMPTY)`; `checkListName("  Trips ")` (+1) | TS-01-01 (+2) → PASS,PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-18 | shapeup/retro-todo/shaping/shaping.md R1 (split 3/3) | PASS | UC-01/UC-02: Creating "Travel" twice yields two lists with the same name (TS-01-02) (covers: REQ-18) | TS-01-02 → PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-2 | shapeup/retro-todo/shaping/shaping.md R2 | PASS | UC-07: Each card shows its name and progress as on-screen text — "1/3 done" for Groceries, (+1) | TS-05-07 (+1) → PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-3 | shapeup/retro-todo/shaping/shaping.md R3 | PASS | UC-07/UC-08: The repository's list/item queries return only the rows of the requested list; deleting a (+2) | TS-08-03 → PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-4 | shapeup/retro-todo/shaping/shaping.md R4 | PASS | UC-03/UC-06: The delete icon (`lists.deleteButton`) opens `Delete "Groceries" and its 3 items?` (+2) | TS-03-01 (+3) → PASS,PASS,PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-16 | shapeup/retro-todo/shaping/shaping.md R16 | PASS | UC-01/UC-02: The rename icon (`lists.renameButton`) opens the dialog titled "RENAME LIST" pre-filled (+1) | TS-02-01 (+2) → PASS,PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-19 | shapeup/retro-todo/shaping/shaping.md R16 (split 2/2) | PASS | UC-01/UC-02: `RenameList(id, "  ")` returns `Err(LIST_NAME_EMPTY)`, the name is unchanged, and the dialog | TS-02-01 → PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-5 | shapeup/retro-todo/shaping/shaping.md R5 | PASS | UC-04: `AddItem(A, "Hike")` adds an open item visible only under list A (TS-04-02) (+1) | TS-04-02 (+1) → PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-20 | shapeup/retro-todo/shaping/shaping.md R5 (split 2/2) | PASS | UC-07/UC-08: `checkItemTitle("")` and `("  ")` return `Err(ITEM_TITLE_EMPTY)` (TS-04-01) (covers: REQ-20) (+2) | TS-04-01 (+1) → PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-6 | shapeup/retro-todo/shaping/shaping.md R6 | PASS | UC-05: One tap anywhere on an item card (component id `list.itemCard.toggle`) flips its done | TS-05-06 → PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-7 | shapeup/retro-todo/shaping/shaping.md R7 | PASS | UC-07/UC-08: `ItemOrder.sort` puts every done item after every open item, and within each group orders (+2) | TS-05-01 (+2) → PASS,PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-21 | shapeup/retro-todo/shaping/shaping.md R7 (split 2/4) | PASS | UC-07/UC-08: `ItemOrder.sort` puts every done item after every open item, and within each group orders (+2) | TS-04-04 (+2) → PASS,PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-22 | shapeup/retro-todo/shaping/shaping.md R7 (split 3/4) | PASS | UC-05: Marking Bread done places it in the done group before Buy milk (Bread is newer-created) | TS-05-04 → PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-23 | shapeup/retro-todo/shaping/shaping.md R7 (split 4/4) | PASS | UC-05: Toggling Bread done then not done returns it above Buy eggs, its creation-order place among | TS-05-03 → PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-8 | shapeup/retro-todo/shaping/shaping.md R8 | PASS | UC-08: A done card carries the state id `item.done` and a checked box (✓); an open card carries (+1) | TS-05-05 (+1) → PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-24 | shapeup/retro-todo/shaping/shaping.md R8 (split 2/2) | PASS | UC-07/UC-08: Done-item text uses a token distinct from open-item text (`inkMuted`/`surfaceDone` vs (+2) | TS-05-05 (+1) → PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-9 | shapeup/retro-todo/shaping/shaping.md R9 | PASS | UC-03/UC-06: The item delete icon (`list.deleteItemButton`) opens `Delete "Buy milk"?` and does not (+1) | TS-06-01 (+3) → PASS,PASS,PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-10 | shapeup/retro-todo/shaping/shaping.md R10 | PASS | UC-08: Weekend opens to "No items yet" / "Add your first item above" (component id (+2) | TS-04-04 (+2) → PASS,PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-11 | shapeup/retro-todo/shaping/shaping.md R11 | no evidence | UC-07/UC-08: `RetroCard` is the single card primitive, with `surface` and `surfaceDone` variants, so a | — | — |
+| REQ-25 | shapeup/retro-todo/shaping/shaping.md R11 (split 2/2) | no evidence | UC-07/UC-08: `RetroCard` is the single card primitive, with `surface` and `surfaceDone` variants, so a (+1) | — | — |
+| REQ-12 | shapeup/retro-todo/shaping/shaping.md R12 | no evidence | UC-07/UC-08: Every text/background token pair actually used (`ink` on `surface`, `inkMuted` on | — | — |
+| REQ-26 | shapeup/retro-todo/shaping/shaping.md R12 (split 2/2) | no evidence | UC-07/UC-08: The card border (`ink` on `background`) and the `RetroCheck` box have a contrast ratio of | — | — |
+| REQ-13 | shapeup/retro-todo/shaping/shaping.md R13 | PASS | UC-07/UC-08: Palette, type sizes and card treatment are defined once — in `color.json`, `float.json` (+2) | TS-08-07 → PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-14 | shapeup/retro-todo/shaping/shaping.md R14 | PASS | UC-07/UC-08: `seed()` yields Groceries (Buy milk done, Buy eggs, Bread), Work (Book meeting room done, (+2) | TS-07-01 (+2) → PASS,PASS,PASS | b12dbc40cbd3, e8f32144ce14, 1818a2ba6047, f8ad992d1f7a |
+| REQ-27 | shapeup/retro-todo/shaping/shaping.md R14 (split 2/2) | no evidence | UC-07/UC-08: The store and repository keep data in memory only — no file, preferences or database API (+1) | — | — |
+| REQ-15 | shapeup/retro-todo/shaping/shaping.md R15 | no evidence | UC-07/UC-08: Every visible string in `resources/base/element/string.json` is in English (no non-ASCII (+4) | — | — |
 
 ## Ratchet
 
@@ -96,11 +93,71 @@ sawtooth series says the loop is still a budgeted retry loop wearing a ratchet's
 > the ratchet was never asked to climb. The Day-1 question — does the loop measurably
 > improve across attempts — needs a run where at least one scope retries.
 
+## Evaluation
+
+| Criterion | Tier | Verdict | Confidence | Evidence | traces_to |
+|---|---|---|---|---|---|
+| TS-01-01 | local | PASS | high | `CreateList.test.ets:22` — blank/whitespace name → `LIST_NAME_EMPTY`, no list added; t0-test.sh green | REQ-17 |
+| TS-01-02 | local | PASS | high | `CreateList.test.ets:33` — "Travel" twice → 2 lists, same name, different id | REQ-18 |
+| TS-01-03 | local | PASS | high | `CreateList.test.ets:43` — `"  Trips "` stores `"Trips"` | REQ-17 |
+| TS-01-04 | device | PASS | high | `device-flows/list-name/TS-01-04.flow` named PASS — new "Travel" card first, order Travel→Groceries | REQ-1 |
+| TS-01-05 | device | PASS | high | `device-flows/list-name/TS-01-05.flow` named PASS — empty SAVE shows "Name can't be empty", dialog stays | REQ-17 |
+| TS-02-01 | local | PASS | high | `RenameList.test.ets:19` — blank name → `LIST_NAME_EMPTY`, old name kept | REQ-16, REQ-19 |
+| TS-02-02 | local | PASS | high | `RenameList.test.ets:29` — rename keeps `id`, `createdAt`, items | — |
+| TS-02-03 | local | PASS | high | `RenameList.test.ets:44` — unknown id → `LIST_NOT_FOUND` | REQ-16 |
+| TS-02-04 | device | PASS | high | `device-flows/list-name/TS-02-04.flow` named PASS — dialog pre-filled, "Groceries" appears twice (card+field) | REQ-16 |
+| TS-03-01 | local | PASS | high | `DeleteList.test.ets:19` — delete A removes only A's items, B intact | REQ-4 |
+| TS-03-02 | local | PASS | high | `DeleteList.test.ets:35` — unknown id → `LIST_NOT_FOUND` | REQ-4 |
+| TS-03-03 | device | PASS | high | `device-flows/delete-confirm/TS-03-03.flow` named PASS — CANCEL keeps list+items | REQ-4 |
+| TS-03-04 | device | PASS | high | `device-flows/delete-confirm/TS-03-04.flow` named PASS — confirm message for seeded list | REQ-4 |
+| TS-04-01 | local | PASS | high | `AddItem.test.ets:20` — empty/blank title → `ITEM_TITLE_EMPTY`, no item | REQ-20 |
+| TS-04-02 | local | PASS | high | `AddItem.test.ets:33` — new item open, visible only under its list | REQ-5 |
+| TS-04-03 | device | PASS | high | `device-flows/toggle-and-add/TS-04-03.flow` named PASS — empty ADD shows error, keeps text | REQ-20 |
+| TS-04-04 | device | PASS | high | `device-flows/toggle-and-add/TS-04-04.flow` named PASS — Weekend invitation replaced by card | REQ-5, REQ-21, REQ-10 |
+| TS-05-01 | local | PASS | high | `ItemOrder.test.ets:11` — done items after every open item | REQ-7, REQ-21 |
+| TS-05-02 | local | PASS | high | `ItemOrder.test.ets:19` — each group newest-created first | REQ-7, REQ-21 |
+| TS-05-03 | local | PASS | high | `ToggleItem.test.ets:51` — toggling Bread twice returns it above Buy eggs | REQ-23 |
+| TS-05-04 | local | PASS | high | `ToggleItem.test.ets:42` — Bread done sits before Buy milk, open group is Buy eggs only | REQ-22 |
+| TS-05-05 | device | PASS | high | `device-flows/toggle-and-add/TS-05-05.flow` named PASS — `item.done`/`item.open` ids + "✓" count flip on toggle | REQ-8, REQ-24 |
+| TS-05-06 | local | PASS | high | `ToggleItem.test.ets:32` — unknown id → `ITEM_NOT_FOUND`, no state change | REQ-6 |
+| TS-05-07 | device | PASS | high | `device-flows/toggle-and-add/TS-05-07.flow` named PASS — reorder happens on the same frame, no animation wait | REQ-2 |
+| TS-06-01 | local | PASS | high | `DeleteItem.test.ets:19` — removes only that item | REQ-9 |
+| TS-06-02 | local | PASS | high | `DeleteItem.test.ets:32` — unknown id → `ITEM_NOT_FOUND` | REQ-9 |
+| TS-06-03 | device | PASS | high | `device-flows/delete-confirm/TS-06-03.flow` named PASS — CANCEL keeps item, DELETE removes it | REQ-9 |
+| TS-06-04 | device | PASS | high | `device-flows/delete-confirm/TS-06-04.flow` named PASS — ✕ opens dialog, `item.done` count unchanged (no toggle) | REQ-9 |
+| TS-06-05 | device | PASS | high | `device-flows/delete-confirm/TS-06-05.flow` named PASS — last item deleted shows "No items yet" | REQ-10 |
+| TS-07-01 | local | PASS | high | `InMemoryTodoRepository.test.ets:41` — `seed()` deterministic across two fresh stores | REQ-14 |
+| TS-07-02 | local | PASS | high | `InMemoryTodoRepository.test.ets:46` — Groceries 1/3, Weekend 0 items | REQ-2 |
+| TS-07-03 | local | PASS | high | `InMemoryTodoRepository.test.ets:54` — deleting every list → `status` Empty | REQ-0 |
+| TS-07-04 | device | PASS | high | `device-flows/lists-and-open/TS-07-04.flow` named PASS — invitation + button on empty P1 | REQ-0 |
+| TS-07-05 | device | PASS | high | `device-flows/lists-and-open/TS-07-05.flow` named PASS — cold start, 3 seeded cards, newest first | REQ-14 |
+| TS-07-06 | device | PASS | high | `device-flows/lists-and-open/TS-07-06.flow` named PASS — `aa force-stop`+relaunch (real process kill, `scripts/ui-flow.sh:112`) restores exactly the seed | REQ-14 |
+| TS-08-01 | local | PASS | high | `InMemoryTodoRepository.test.ets:72` — Groceries orders Bread, Buy eggs, Buy milk | REQ-7 |
+| TS-08-02 | local | PASS | high | `InMemoryTodoRepository.test.ets:78` — Work orders Send weekly report, Book meeting room | — |
+| TS-08-03 | local | PASS | high | `InMemoryTodoRepository.test.ets:84` — Work items never appear under Groceries | REQ-3 |
+| TS-08-04 | device | PASS | high | `device-flows/lists-and-open/TS-08-04.flow` named PASS — Weekend opens to empty invitation | REQ-10 |
+| TS-08-05 | device | PASS | high | `device-flows/lists-and-open/TS-08-05.flow` named PASS — order Bread→Buy eggs→Buy milk, exactly 1 `item.done` (Buy milk, per TS-08-01 order) | REQ-8 |
+| TS-08-06 | device | PASS | high | `device-flows/lists-and-open/TS-08-06.flow` named PASS — Back returns to P1 with cards rendered (not Loading) | REQ-24 |
+| TS-08-07 | local | PASS | high | Direct probe: `git status --porcelain app/entry/src/main/module.json5 app/entry/src/main/resources/base/profile/main_pages.json` → empty (byte-unchanged vs HEAD); `find app/entry/src -iname "*route_map*"` → no match under source (only a build-intermediate copy under `.test/`, not authored) | REQ-13 |
+
+### Refuted criteria and bugs
+
+None.
+
 ## QA findings
 
 | Lens | Hunted | Findings | Of which contradicts-EVAL |
 |---|---|---|---|
-| all six | not hunted | 0 | 0 |
+| ① Boundary | C-01 | 1 | 0 |
+| ② Concurrency | C-02, C-03 | 1 | 0 |
+
+→ details live in `.shapeup/retro-todo/discovery/ledger.md` under the `## Discovered` section
+  ingest appends for this hunt's order.
+
+## Discovered, not built
+
++ No vi_VN/element/string.json exists in the project — REQ-15's vi_VN parity requirement has no locale resource file to check against; pre-existing gap, not introduced by this scope
++ app/entry/src/ohosTest/ets/test/ListsScreen.test.ets is listed in this scope's allowed substrate but does not exist on disk; only List.test.ets is present under ohosTest
 
 ---
 
