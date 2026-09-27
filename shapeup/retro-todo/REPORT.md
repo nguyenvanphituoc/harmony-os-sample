@@ -151,7 +151,7 @@ None.
 | ① Boundary | C-01 | 1 | 0 |
 | ② Concurrency | C-02, C-03 | 1 | 0 |
 
-→ details live in `.shapeup/retro-todo/discovery/ledger.md` under the `## Discovered` section
+→ details live in the run trace under the `## Discovered` section
   ingest appends for this hunt's order.
 
 ## Discovered, not built

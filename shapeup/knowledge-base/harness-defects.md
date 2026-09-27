@@ -1211,3 +1211,48 @@ On the same run the hunt ran 3/3 charters on the emulator and recorded two findi
 unbounded list name fills the screen, and QA-102, a double-tap on one item row toggles three items
 done. So the zero-charter hunt on 3.15.1 was model variance. Nothing yet requires a hunt over a
 reachable app to draft a charter, and the run's QA ledger row still says `run` whatever the count.
+
+## Full status re-check — 2026-09-27, plugin 3.16.1
+Each row was checked against run `retro-todo-20260927T063004Z-4db8f5ed` (receipt 3.16.0) and the
+plugin source, not against the entries above.
+
+| HD | Status | Evidence |
+|---|---|---|
+| 1 | fixed | L1b crossed; spec lint red 0 on the current tree |
+| 2 | fixed | an attempt counts as spent only when a dispatch receipt plus a leg row or WorkResult say so; run 8 closed with no breaker |
+| 3 | **recurred 4th time, fixed in 3.16.1** | see HD-21 |
+| 4 | fixed | a fixture that never started keeps an `error` field distinct from a failing exit |
+| 5 | fixed | no run pointer after the close; `last-run` crumb names the run |
+| 6 | fixed | a red spec-lint aborts L1b with its own message, apart from an unreadable gate decision |
+| 7 | fixed | spec lint flags a No-go registered as a covered requirement |
+| 8 | fixed | the hill derivation may move a dot backwards |
+| 9 | fixed | a `cannot-ship` census narrows L4 to its evidence |
+| 10 | fixed | the attempt gate reads the run key |
+| 11 | fixed | census written by the run (`reports/hammer-census.json`) |
+| 12 | fixed | run 8 regenerated the board from the committed spec |
+| 13 | fixed | `results/orient.json` and a leg row exist |
+| 14 | fixed | front matter agrees with the close line (`shipped`, PASS, 1 round) |
+| 15 | fixed | requirements 22/28 with evidence |
+| 16 | fixed | grants belong in the project's settings file |
+| 17 | fixed | the evaluate order carries `build_gate` and `launch_cmd` |
+| 18 | fixed by fixture, not seen live | a resumed closed run reopens with `prior_closes` (3.11.0); no live run has resumed one since |
+| 19 | **open** | a hunt over a reachable app may still draft zero charters; the report says `not-hunted` (3.15.1) but nothing requires a charter |
+| 20 | fixed | a PASS names every row (3.16.0); 42 per-row criteria in run 8 |
+| 21 | fixed in 3.16.1 | below |
+| 22 | fixed in 3.16.1 | below |
+| 23 | fixed in 3.16.1 | below |
+
+## HD-21 — the report's QA section copied a run-trace path, and the committed report bricked the slug
+In run 8, the first run whose hunt had findings, `REPORT.md:154` quoted the hunt report's pointer to
+the discovery ledger by its `.shapeup/` path. The next run's spec lint reds that file, so L1b aborts.
+The report's write boundary rewrote board ids only. From 3.16.1 it rewrites run-trace paths too, and
+this report was regenerated from run 8's own trace (one line changed; spec lint red 0).
+
+## HD-22 — GATE L4 was signed twice
+Run 8's gate ledger holds two `L4 ship` rows, the second a minute after the close. The run crosses L4
+itself, and the orchestrator's closing step (still reading "the workflow never sees L4") resolved it
+again. From 3.16.1, resolving L4 over a closed run returns the sign-off on record and writes nothing.
+
+## HD-23 — the run's return carried a sentence where the report path belongs
+The RunReturn's `report` field held the ship command's one-line summary. From 3.16.1 it is the path.
+`--orch-model` was documented as an override and changed nothing; the option list now says so.
