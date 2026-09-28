@@ -40,15 +40,15 @@ One row per registered clause. A requirement has evidence when an acceptance cri
 covers it AND a criterion grading it passed — `covers:` is the join, the judge's anchor is the
 path back. This is a projection, never a verdict: it never blocked this ship.
 
-**5/5 PASS** · run `toggle-once-20260928T111133Z-3f49258a`
+**0/5 PASS · 5 no evidence (REQ-1 ← shaping.md R1, REQ-2 ← shaping.md R2, REQ-3 ← shaping.md R3, …)** · run `toggle-once-20260928T114548Z-e2675ab4`
 
 | REQ | source | evidence | covering AC | criterion | T0 |
 |---|---|---|---|---|---|
-| REQ-1 | shaping.md R1 | PASS | UC-01: `ListViewModel` gains a `SettleWindow` (domain-model.md: `lastToggleAt: number \| null`, (+1) | TS-01-01 (+1) → PASS,PASS | f5779bab0a0c, 0346afffb2d2 |
-| REQ-2 | shaping.md R2 | PASS | UC-01: `ListViewModel` gains a `SettleWindow` (domain-model.md: `lastToggleAt: number \| null`, (+1) | TS-01-01 (+1) → PASS,PASS | f5779bab0a0c, 0346afffb2d2 |
-| REQ-3 | shaping.md R3 | PASS | UC-01: A call to `onToggle` for a *different* itemId inside the open window is also ignored — the (+2) | TS-01-02 (+2) → PASS,PASS,PASS | f5779bab0a0c, 0346afffb2d2 |
-| REQ-4 | shaping.md R4 | PASS | UC-01: `ToggleItem.execute`'s existing re-sort (`ItemOrder`, retro-todo UC-05) is unchanged by this (+1) | TS-01-07 (+1) → PASS,PASS | f5779bab0a0c, 0346afffb2d2 |
-| REQ-5 | shaping.md R5 | PASS | UC-01: `scripts/ui-flow.sh` dispatches a new `doubletap` step to two `uitest uiInput click` calls | doubletap step composition (one trailing settle) → PASS | f5779bab0a0c, 0346afffb2d2 |
+| REQ-1 | shaping.md R1 | no evidence | UC-01: A second `onToggle` call within `windowMs` of the first does not call `ToggleItem.execute` (+1) | — | — |
+| REQ-2 | shaping.md R2 | no evidence | UC-01: A second `onToggle` call within `windowMs` of the first does not call `ToggleItem.execute` (+1) | — | — |
+| REQ-3 | shaping.md R3 | no evidence | UC-01: The window guards the whole screen, not one row: a second `onToggle` call for a *different* (+1) | — | — |
+| REQ-4 | shaping.md R4 | no evidence | UC-01: After a call that does reach `ToggleItem`, the items list re-sorts so done items sink below (+1) | — | — |
+| REQ-5 | shaping.md R5 | no evidence | UC-01: `ui-flow.sh` accepts a `doubletap` step: two clicks on the same node with no `settle()` | — | — |
 
 ## Ratchet
 
@@ -70,18 +70,25 @@ sawtooth series says the loop is still a budgeted retry loop wearing a ratchet's
 
 ## Evaluation
 
-| Criterion | Dimension | Verdict | Confidence | Evidence | traces_to |
-|---|---|---|---|---|---|
-| TS-01-01 second `onToggle` within `windowMs` is a no-op | spec-conformance | PASS | high | Named PASS in T0 artifact t1 (fixture `./scripts/t0-test.sh`, exit 0); check `app/entry/src/test/ListViewModel.test.ets:52` asserts `doneMap` unchanged after a second call at t=1100 (< windowMs=400 boundary read against t=1000) — matches INV-01/INV-04 | [REQ-1, REQ-2] |
-| TS-01-02 `onToggle` at/after `windowMs` calls `ToggleItem` again | spec-conformance | PASS | high | `ListViewModel.test.ets:63-77`: t=1000 then t=1400 (≥400ms later) flips `done` again (`afterSecond === !afterFirst`); fixture green in t1 | [REQ-3] |
-| TS-01-03 window guards a different itemId, screen-wide | spec-conformance | PASS | high | `ListViewModel.test.ets:79-95`: toggle Bread at t=1000, toggle Buy eggs at t=1100 (inside window) — `doneMap` unchanged; `ListViewModel.isSettling` (`ListViewModel.ets:67-69`) keys off a single `lastToggleAt` field, not per-item, confirming INV-02 | [REQ-3] |
-| TS-01-04 live double-tap on Bread marks only Bread done | spec-conformance | PASS | high | Named PASS in T0 artifact t2 (`ui-flow.sh device-flows/v2-device-flow`, exit 0); `device-flows/v2-device-flow/TS-01-04.flow` (sha256 `99c9f286…` matches `check_files` in t2) asserts item.done 1→2, item.open 2→1, Buy eggs still present | [REQ-1] |
-| TS-01-05 live double-tap on a done row reopens only that row | spec-conformance | PASS | high | Named PASS TS-01-05 in T0 artifact t2; `TS-01-05.flow` sha256 matches `check_files` | [REQ-2] |
-| TS-01-06 two deliberate taps toggle both rows | spec-conformance | PASS | high | Named PASS TS-01-06 in T0 artifact t2; `TS-01-06.flow` sha256 matches; two plain `tap` steps use the existing per-action `settle()` (spaced beyond `windowMs`) | [REQ-3] |
-| TS-01-07 toggle moves the card immediately, no reorder animation | spec-conformance | PASS | high | Named PASS TS-01-07 in T0 artifact t2; `TS-01-07.flow` sha256 matches; retro-todo's `ItemOrder`/re-sort untouched (frozen, not re-graded) | [REQ-4] |
-| `doubletap` step: two clicks, no settle between, one trailing settle | spec-conformance | PASS | high | `scripts/ui-flow.sh:120-132`: `doubletap` branch issues two `sh(...uitest uiInput click...)` calls back-to-back then one `settle()` before `continue` — matches `tap`'s one-trailing-settle composition | [REQ-5] |
-| `ToggleItem`/domain layer unchanged (frozen) | spec-conformance | PASS | high | `app/entry/src/main/ets/features/todo/domain/**` shows no diff for this feature (git status: only `TodoModule.ets`, `ListViewModel.ets`, `List.test.ets`, `ListViewModel.test.ets`, `scripts/ui-flow.sh` touched) | [REQ-4] |
-| Non-Go: no change to list-screen layout/dialogs/persistence, no reorder animation added | spec-conformance | PASS | high | Diff confined to settle-window logic, Clock port, and test/device-flow additions; no animation code introduced | [] |
+| Criterion | Probe | Verdict | Confidence | Evidence |
+|---|---|---|---|---|
+| INV-01 — windowMs is one named constant, chosen once, not per-call | [cmd] | PASS | high | `SETTLE_WINDOW_MS: number = 400` declared once at module scope; `readonly windowMs = SETTLE_WINDOW_MS` set once in the constructor — app/entry/src/main/ets/features/todo/screens/list/ListViewModel.ets:12,28 |
+| INV-02 — window is screen-wide, not per-row | [cmd] | PASS | high | `lastToggleAt`/`isSettling` are instance fields on `ListViewModel`, not keyed by `itemId` — a settling window opened by one row's tap blocks every row's `onToggle` — app/entry/src/main/ets/features/todo/screens/list/ListViewModel.ets:27,67-69 |
+| INV-03 — a tap outside the window always reaches ToggleItem | [cmd] | PASS | high | `onToggle` calls `this.toggleItem.execute(itemId)` whenever `isSettling(now)` is false, unconditionally on itemId — app/entry/src/main/ets/features/todo/screens/list/ListViewModel.ets:71-81 |
+| INV-04 — an ignored tap changes no state and surfaces nothing | [cmd] | PASS | high | the `isSettling` branch is a bare `return;` — no state write, no nav call, no dialog — app/entry/src/main/ets/features/todo/screens/list/ListViewModel.ets:76-78 |
+| TS-01-01 — second onToggle within windowMs does not call ToggleItem again | [cmd] (T0 unit fixture) | PASS | high | `./scripts/t0-test.sh` exit 0 within the run trace; source assertion at app/entry/src/test/ListViewModel.test.ets:49-66 asserts `doneMap` unchanged after a second tap at clock 1100 (100ms after the first, inside 400ms window) |
+| TS-01-02 — onToggle at/after windowMs calls ToggleItem again | [cmd] (T0 unit fixture) | PASS | high | same T0 fixture, green; app/entry/src/test/ListViewModel.test.ets:68-86 asserts `afterSecond === !afterFirst` at clock 1400 (400ms after the first, at the window boundary) |
+| TS-01-03 — window guards a call for a different itemId in the same window | [cmd] (T0 unit fixture) | PASS | high | same T0 fixture, green; app/entry/src/test/ListViewModel.test.ets:88-106 asserts Bread's toggle at 1000 is unaffected by an eggs-tap at 1100 |
+| TS-01-04 — live double-tap on Bread marks only Bread done; Buy eggs unaffected (REQ-1) | [ui] (named T0 device fixture) | PASS | high | `device-flows/v2-device-flow/TS-01-04.flow` sha256 `99c9f286a9ed4c5ea37c3d65933d012f190eaab99d2b0aa1667bace166240e8b` matches the check_files entry recorded in the run trace; `named_results.TS-01-04 = PASS`; the flow's own Expect (done count 1→2, open count 2→1, Buy eggs still present) matches the row |
+| TS-01-05 — live double-tap on a done row marks only that row open again (REQ-2) | [ui] (named T0 device fixture) | PASS | high | `device-flows/v2-device-flow/TS-01-05.flow` sha256 `88a56092a936ab755ccaf497ae0288b49a5c0e09c074eb682d33646b84f67aea` matches; `named_results.TS-01-05 = PASS`; flow's Expect (done count 1→0, open count 2→3) matches the row |
+| TS-01-06 — two deliberate taps on two different rows toggle both (REQ-3) | [ui] (named T0 device fixture) | PASS | high | `device-flows/v2-device-flow/TS-01-06.flow` sha256 `04aa6f216ebc405075806452133a4f35db6f21ca7cad8277663531db6d260b07` matches; `named_results.TS-01-06 = PASS`; flow uses two separate `tap` steps (each with its own trailing `settle()`, ~800ms apart), matching "spaced at a normal pace"; Expect (done count 1→3, open count 2→0) matches the row |
+| TS-01-07 — after a toggle, card moves immediately, done items stay below open, no animation (REQ-4) | [ui] (named T0 device fixture) | PASS | high | `device-flows/v2-device-flow/TS-01-07.flow` sha256 `6889ab7214cb1e2d15a634b04c2bd138207ca0ead41592e88cd5685350481ba6` matches; `named_results.TS-01-07 = PASS`; flow's `expect order` assertions match the row (frozen retro-todo `ItemOrder`, not re-graded here) |
+| Step 5 / REQ-5 — device flow language expresses a double-tap as one `doubletap` step | [cmd] | PASS | high | `scripts/ui-flow.sh:118-129` dispatches `doubletap` to two back-to-back `uitest uiInput click` calls with no `settle()` between them, then one trailing `settle()` — matching integration.md's guard against the 800ms-apart failure mode |
+| Testability seam — `ListViewModel` constructor widens to accept an optional `Clock`, default `SystemClock` | [cmd] | PASS | high | app/entry/src/main/ets/features/todo/screens/list/ListViewModel.ets:33-41; `clock === undefined ? new SystemClock() : clock` |
+| Registration — the new `*.test.ets` is imported from `List.test.ets` (KB-SA-001/009) | [cmd] | PASS | high | app/entry/src/test/List.test.ets imports and calls `listViewModelTest()` |
+| Repository/contract unchanged — `ToggleItem`/`TodoRepository.setDone` untouched | [cmd] | PASS | high | scope substrate for v1-settle-window lists only `ListViewModel.ets`, `TodoModule.ets`, `Clock.ts`, and the two test files; no domain file in the diff (git show 3c953f7 --stat) |
+| Non-Go — no reorder animation added | [cmd] | PASS | high | no animation API/dependency appears in `ListViewModel.ets`; TS-01-07's flow asserts order only, no animation-timing assertion |
+| Non-Go — no change to list screen layout/dialogs/persistence, retro-todo spec/Test Surface untouched | [cmd] | PASS | high | diff (git show 3c953f7 --stat) touches no file under `shapeup/retro-todo/spec/**` and no screen `.ets` other than `ListViewModel.ets`'s logic |
 
 ### Refuted criteria and bugs
 
@@ -91,53 +98,52 @@ None.
 
 | Lens | Hunted | Findings | Of which contradicts-EVAL |
 |---|---|---|---|
-| ②concurrency | C-01 | 0 | 0 |
-| ④cross-UC journey | C-02 | 1 | 0 |
-| ③state interruption | C-03 | 0 (charter exhausted time with open scent) | 0 |
+| ② Concurrency | C-01 | 1 | 1 |
+| ⑥ Data residue | C-02 | 0 | 0 |
 
-→ finding detail lives in the run trace under the `## Discovered`
-  section ingest appends for this hunt's order.
+→ full finding detail lives in the run trace under the `## Discovered`
+  section ingest appends for this hunt's order; summarized here for convenience:
 
-### C-01 — rapid triple/quad tap (no finding)
+**[QA-001] [UC-01] Two taps landed on two different item rows in quick back-to-back succession
+both silently fail to toggle — no error, no toggle, no evidence to the user that anything was
+dropped.**
 
-Baseline single tap on Bread (open→done) followed by 3 more rapid taps on the same screen
-position: only the first tap toggled state; taps 2–4 landed inside the still-open window and
-were no-ops (`✓ Bread` after 4 taps total, matching a single toggle). Consistent with
-INV-01/INV-04 as already graded by TS-01-01 — no new territory found here beyond what EVAL
-covered; closing this charter with no finding.
-
-### C-02 — toggle then tap the old position of a delete control (confirmed finding)
-
-1. Groceries list open, rows in order: Bread (done), Buy eggs (open), Buy milk (done).
-2. Tap "Buy eggs" text (toggles it — no-animation re-sort fires immediately per TS-01-07).
-3. Immediately tap the screen coordinates where Buy eggs' own "✕" control was rendered
-   *before* step 2's re-sort (same (x,y), no wait).
-4. Result: a delete-confirmation dialog appears reading `Delete "Bread"?` — the tap in step 3
-   landed on Bread's "✕", not Buy eggs', because the animation-free re-sort moved a different
-   row under that exact position between the two taps.
-5. Dialog cancelled (CANCEL tapped) to leave app state unmodified; final state confirmed via
-   `uitest dumpLayout` — all 3 items intact, none deleted.
-
-This is a live, reproduced hazard: any rapid second tap aimed at a screen position right after
-a toggle can act on whichever row the instantaneous re-sort put there, not the row the user was
-looking at — for the delete control specifically, that is a wrong-item deletion one CANCEL away
-from being real. TS-01-07 graded PASS on "the card moves immediately" as a fact; it did not
-probe what a co-located control now sitting under a stale tap position does — that is the gap
-this charter was chartered for.
-
-### C-03 — background/foreground mid-window (not completed)
-
-Time-boxed session ended before a clean repro of any state-interruption scenario around
-`lastToggleAt` surviving an `onWillHide`/`onShown` cycle could be captured; noted here as an
-open scent rather than logged as a finding (no repro = no finding, per the hunt's own rule).
-Worth a follow-up hunt session.
+- lens: ②concurrency
+- severity_hint: ux-degradation
+- test_gap: exploratory-only
+- contradicts: INV-03 ("A tap outside the window always reaches ToggleItem") — the first of the
+  two taps landed on a row (`Buy eggs` / `Bread`, in the two repros below) that was genuinely
+  outside any settle window (no toggle had run on this screen instance, or the prior toggle was
+  well past `windowMs`), so per INV-03 it should have reached `ToggleItem` regardless of what the
+  second tap does. It did not.
+- repro (Groceries list, cold start, seed 1/3 done — Bread/Buy eggs open, Buy milk done):
+  1. `hdc shell uitest dumpLayout` → resolve on-screen centers for the "Bread" row (604,857) and
+     the "Buy eggs" row (604,1235).
+  2. `hdc shell uitest uiInput click 604 857` (tap Bread) issued, immediately followed by
+     `hdc shell uitest uiInput click 604 1235` (tap Buy eggs) issued as a second, independent
+     dispatch with no wait between them.
+  3. `hdc shell uitest dumpLayout` (after a 1s settle) → done count is still 1/3, Bread and Buy
+     eggs both still show as open (`item.open`), Buy milk unchanged. Neither tap registered.
+  4. Repro #2 (role-swapped, to rule out a coordinate mistake): from the resulting 2/3-done state
+     (Bread now done, Buy eggs open), the same rapid pair was fired at Buy eggs's row (604,857)
+     then Bread's row (604,1235) — result again: no change to either row.
+  - Control: a single tap at the same coordinate, issued alone with a settle wait before the next
+    dump, reliably toggles the row every time (used to establish both starting states above).
+- Caveat for triage: the two taps here are two independent `hdc` process dispatches, not a
+  literal two-finger simultaneous press — the underlying timing between them is whatever two
+  back-to-back shell round-trips produce (unmeasured, but the same order of magnitude as a fast
+  real double-tap by two hands). Whether the drop sits in `uitest`'s input injection, the ArkUI
+  gesture recognizer treating two near-simultaneous touch points ~380px apart as an ambiguous
+  gesture, or `ListViewModel` itself is not established by this repro — only that the live app,
+  probed the way `TS-01-04`..`06` are probed, shows both taps lost with nothing surfaced.
 
 ## Discovered, not built
 
-~ [lens:④cross-UC journey] [QA-001] [UC-01] Toggling a row re-sorts the list instantly (no animation, TS-01-07); a second tap immediately aimed at the previous screen position of that row's delete control ("✕") lands on a different row that the re-sort moved underneath it, opening that other row's delete-confirmation dialog instead
-    repro: 1. Groceries list: Bread=done, Buy eggs=open, Buy milk=done. 2. Tap 'Buy eggs' text row to toggle it (triggers immediate re-sort per TS-01-07). 3. Without waiting, tap the exact (x,y) where Buy eggs' own '✕' control was rendered before step 2. 4. Observe: a 'Delete "Bread"?' confirmation dialog appears — the tap hit Bread's '✕', which the re-sort moved into that position, not Buy eggs'. 5. Cancel the dialog; confirm via uitest dumpLayout that all 3 items remain.
-    severity-hint: data-integrity
+~ [lens:②concurrency] [QA-001] [UC-01] Two taps landed on two different item rows in quick back-to-back succession both silently fail to toggle — no error, no toggle, no evidence to the user that anything was dropped
+    repro: 1. hdc shell uitest dumpLayout on the Groceries list (cold start, seed 1/3 done — Bread/Buy eggs open, Buy milk done); resolve on-screen centers for the Bread row (604,857) and the Buy eggs row (604,1235). 2. hdc shell uitest uiInput click 604 857 (tap Bread) issued immediately followed by hdc shell uitest uiInput click 604 1235 (tap Buy eggs) as a second, independent dispatch with no wait between them. 3. hdc shell uitest dumpLayout (after a 1s settle) — done count still 1/3, Bread and Buy eggs both still open, Buy milk unchanged; neither tap registered. 4. Repro #2 (role-swapped): from the resulting 2/3-done state (Bread now done, Buy eggs open), fired the same rapid pair at Buy eggs's row (604,857) then Bread's row (604,1235) — result again: no change to either row. Control: a single tap alone, with a settle wait before the next dump, reliably toggles the row every time.
+    severity-hint: ux-degradation
     test-gap: exploratory-only
+    contradicts: INV-03
 
 ---
 

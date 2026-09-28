@@ -1256,3 +1256,22 @@ again. From 3.16.1, resolving L4 over a closed run returns the sign-off on recor
 ## HD-23 — the run's return carried a sentence where the report path belongs
 The RunReturn's `report` field held the ship command's one-line summary. From 3.16.1 it is the path.
 `--orch-model` was documented as an override and changed nothing; the option list now says so.
+
+## Plugin 3.17.0 → 3.17.2 — toggle-once soaks (2026-09-28)
+The first pitch built from a QA finding (retro-todo's QA-102, the double-tap). Three runs, all Sonnet.
+
+| | Result |
+|---|---|
+| HD-19 (hunt with no charter) | fixed in 3.17.0 — a `done` hunt over a reachable app with 0 charters is refused and sent back once; both toggle-once hunts ran 3/3 charters |
+| HD-18 (resume of a closed run) | **verified live** — a run killed mid-BUILD, closed `aborted`, relaunched: it reopened, kept the abort under `prior_closes`, and closed `shipped` with its own cause |
+| HD-22 (L4 twice) | verified live — one L4 row per run |
+| HD-24 (new) | fixed in 3.17.1 — one scope with no green T0 made the judge refuse the whole round, and the run aborted at L3. The order now names such scopes and their rows are graded FAIL |
+| HD-25 (new) | fixed in 3.17.2 — the same spec read 5/5 under one judge and 0/5 under the next, which filled no `traces_to`. A verdict that anchors no criterion beside a covering board is sent back once |
+| KB-SA-009 (PO, COACH-1) | held — the re-cut granted `List.test.ets` to the scope that added a unit test |
+
+Shipped: `toggle-once` PASS in one round, built from baseline. Checked by hand on the emulator: a system
+double-click on Bread leaves two items done (was three), and a deliberate tap a second later still
+toggles. QA-001 of the last run ("two quick taps on two rows both drop") did not reproduce: the first
+tap toggles and only the second, inside the 400 ms window, is ignored, as designed. Open, for the PO:
+C-02, a tap on a row's ✕ just after a toggle re-sorts the list can open the delete dialog for the item
+that slid into place (one CANCEL from a wrong-item delete).

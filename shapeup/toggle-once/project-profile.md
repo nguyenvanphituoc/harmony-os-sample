@@ -9,35 +9,39 @@ launch_probe: "./scripts/launch-probe.sh"
 
 # Project profile — toggle-once
 
-Re-derived on 2026-09-28 for branch `soak/retro-todo-4`, at this run's open. `archetype`,
-`entry_point`, `stack`, `build_probe` and `launch_probe` are unchanged from `shapeup/retro-todo/
-project-profile.md` — same app, same HAP — but every value below was re-measured on this checkout,
-not carried forward.
+Re-derived on 2026-09-28 for branch `soak/retro-todo-4`, at this run's open (second run on this
+slug — `toggle-once-20260928T114548Z-e2675ab4`; the prior run,
+`toggle-once-20260928T111133Z-3f49258a`, already shipped this pitch, frozen in this file's
+`REPORT.md`). `archetype`, `entry_point` and `stack` are unchanged from the prior open; every
+value below was re-measured on this checkout, not carried forward.
 
 | Key | Value | Where it comes from |
 |-----|-------|---------------------|
 | `archetype` | `mobile` | one `entry` HAP, `"type": "entry"`, `deviceTypes: ["phone"]` — `app/entry/src/main/module.json5` |
 | `entry_point` | `app/entry/src/main/ets/entryability/EntryAbility.ets` | `module.json5` → `abilities[0].srcEntry` |
-| `build_probe` | `./scripts/t0-assemble.sh` | **executed green at this open** — `BUILD SUCCESSFUL in 3 s 874 ms` (incremental, mostly UP-TO-DATE), house rules running, HAP unsigned (`signingConfigs` is `[]`) |
+| `build_probe` | `./scripts/t0-assemble.sh` | **executed green at this open** — `BUILD SUCCESSFUL in 3 s 257 ms`, house rules running, HAP unsigned (`signingConfigs` is `[]`) |
 | `launch_probe` | `./scripts/launch-probe.sh` | **executed green at this open**: target `127.0.0.1:5555`, unsigned HAP installs, `start ability successfully`, pid alive, 14-node `uitest dumpLayout` tree (`MY LISTS`, three seeded list cards) |
 
 ## State of the tree at run open — this pitch's surface
 
-The baseline is retro-todo as shipped (`main` of this branch), not the template. This pitch is a
-narrow fix inside the list screen retro-todo already built, found by the QA hunt (finding QA-102).
+This pitch already shipped in the prior run on this slug: the tree is the **post-fix** state, not
+the baseline this file described at that run's open.
 
-- `app/entry/src/main/ets/features/todo/screens/list/` holds `ListPage.ets`, `ItemCard.ets`,
-  `ListViewModel.ets`. `ListViewModel.onToggle(itemId)` calls `ToggleItem.execute(itemId)`
-  directly today — **no settle window exists yet**; this is the pre-fix state the pitch's A1/A2
-  will change.
-- `scripts/ui-flow.sh`'s step language (`tap`, `type`) has **no `doubletap` op** — grep confirms
-  only `tap`/`type` are handled (`scripts/ui-flow.sh:118`). A3 adds it.
-- The retro-todo spec at `shapeup/retro-todo/spec/` (four scope contracts, `requirements.md`,
-  `wiring-map.md`, frozen `REPORT.md`) is untouched by this pitch — R4/No-goes require it to stay
-  that way. `shapeup/toggle-once/spec/` does not exist yet; ANALYZE creates it.
-- No `scopes/*.md` exist yet for this pitch — MAP SCOPES creates them. Given the single Place (P2
-  List, unchanged layout) and single UI affordance (U1) in the breadboard, this is a small, single-
-  screen surface; expect one scope, not several.
+- `app/entry/src/main/ets/features/todo/screens/list/ListViewModel.ets:71-81` — `onToggle`
+  already has the settle window: it reads `this.clock.now()`, short-circuits via
+  `this.isSettling(now)` before calling `ToggleItem.execute`, and stamps `this.lastToggleAt = now`
+  after. A1/A2 are built.
+- `scripts/ui-flow.sh` already has the `doubletap` op (line 15 doc comment, dispatch at line 120,
+  handling at line 127). A3 is built.
+- `shapeup/toggle-once/spec/` is committed (`_index.md`, `domain-model.md`, `usecases/`,
+  `integration.md`, `ux-behavior.md`, `synthesis.md`, `feedback.md`) — ANALYZE ran in the prior
+  run; a fresh ANALYZE this run should find the tree on disk and not re-derive it.
+- `shapeup/toggle-once/scopes/` is committed: two contracts, `v1-settle-window` (UC-01, 5 files)
+  and `v2-device-flow` (UC-01, 2 files, depends on v1) — MAP SCOPES ran in the prior run.
+- The prior run's frozen `REPORT.md` records PASS in one round plus a QA finding (QA-001,
+  discovered-not-built): a rapid second tap aimed at a toggled row's now-vacated delete-control
+  position can land on a different row's delete control after the animation-free re-sort. That
+  finding is still open (no scope owns a fix for it) — this run's own QA pass may re-surface it.
 
 ## House rules: what bites
 
