@@ -1,0 +1,6 @@
+# After a toggle goes through, the card still moves immediately with no animation and done items stay below open ones (REQ-4)
+launch
+tap text "Groceries"
+tap text "Bread"
+expect order text "Buy eggs" "Bread"
+expect order text "Buy eggs" "Buy milk"

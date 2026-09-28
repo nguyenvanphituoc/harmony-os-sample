@@ -1,0 +1,11 @@
+# A live double-tap on Bread's row (Groceries seed) marks only Bread done; Buy eggs is unaffected (REQ-1)
+launch
+tap text "Groceries"
+expect count id "item.done" 1
+expect count text "✓" 1
+expect count id "item.open" 2
+doubletap text "Bread"
+expect count id "item.done" 2
+expect count text "✓" 2
+expect count id "item.open" 1
+expect text "Buy eggs"

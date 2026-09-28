@@ -8,6 +8,7 @@ import toggleItemTest from './ToggleItem.test';
 import addItemTest from './AddItem.test';
 import deleteListTest from './DeleteList.test';
 import deleteItemTest from './DeleteItem.test';
+import listViewModelTest from './ListViewModel.test';
 
 export default function testsuite() {
   localUnitTest();
@@ -20,4 +21,5 @@ export default function testsuite() {
   addItemTest();
   deleteListTest();
   deleteItemTest();
+  listViewModelTest();
 }

@@ -1,5 +1,6 @@
 import { NavPort } from '../../../../shared/kernel/NavPort';
 import { ViewStatus } from '../../../../shared/kernel/ViewStatus';
+import { Clock, SystemClock } from '../../../../shared/kernel/Clock';
 import { TodoStore } from '../../domain/TodoStore';
 import { TodoList } from '../../domain/TodoList';
 import { TodoItem } from '../../domain/TodoItem';
@@ -7,6 +8,8 @@ import { ItemOrder } from '../../domain/ItemOrder';
 import { ToggleItem } from '../../domain/ToggleItem';
 import { AddItem } from '../../domain/AddItem';
 import { ErrorCode, Result } from '../../domain/Result';
+
+const SETTLE_WINDOW_MS: number = 400;
 
 export interface ItemDeleteOpener {
   openDelete(itemId: string, title: string): void;
@@ -20,18 +23,22 @@ export class ListViewModel {
   private toggleItem: ToggleItem | undefined;
   private addItem: AddItem | undefined;
   private dialogs: ItemDeleteOpener | undefined;
+  private clock: Clock;
+  private lastToggleAt: number | null = null;
+  private readonly windowMs: number = SETTLE_WINDOW_MS;
   @Trace loaded: boolean = false;
   @Trace newTitle: string = '';
   @Trace hasTitleError: boolean = false;
 
   constructor(store: TodoStore, nav: NavPort, listId: string, toggleItem?: ToggleItem, addItem?: AddItem,
-              dialogs?: ItemDeleteOpener) {
+              dialogs?: ItemDeleteOpener, clock?: Clock) {
     this.store = store;
     this.nav = nav;
     this.listId = listId;
     this.toggleItem = toggleItem;
     this.addItem = addItem;
     this.dialogs = dialogs;
+    this.clock = clock === undefined ? new SystemClock() : clock;
   }
 
   @Computed
@@ -57,10 +64,20 @@ export class ListViewModel {
     this.loaded = true;
   }
 
+  private isSettling(now: number): boolean {
+    return this.lastToggleAt !== null && now - this.lastToggleAt < this.windowMs;
+  }
+
   onToggle(itemId: string): void {
-    if (this.toggleItem !== undefined) {
-      this.toggleItem.execute(itemId);
+    if (this.toggleItem === undefined) {
+      return;
     }
+    const now: number = this.clock.now();
+    if (this.isSettling(now)) {
+      return;
+    }
+    this.toggleItem.execute(itemId);
+    this.lastToggleAt = now;
   }
 
   onTitleChange(value: string): void {

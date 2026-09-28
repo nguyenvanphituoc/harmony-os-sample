@@ -1,0 +1,10 @@
+# A live double-tap on a done row (e.g. Buy milk) marks only that row open again (REQ-2)
+launch
+tap text "Groceries"
+expect count id "item.done" 1
+expect count id "item.open" 2
+doubletap text "Buy milk"
+expect count id "item.done" 0
+expect count id "item.open" 3
+expect text "Buy eggs"
+expect text "Bread"

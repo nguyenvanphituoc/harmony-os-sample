@@ -1,5 +1,5 @@
 import { NavPort } from '../../shared/kernel/NavPort';
-import { SystemClock } from '../../shared/kernel/Clock';
+import { Clock, SystemClock } from '../../shared/kernel/Clock';
 import { SequenceIdGen } from '../../shared/kernel/IdGen';
 import { InMemoryTodoRepository } from './domain/InMemoryTodoRepository';
 import { TodoStore } from './domain/TodoStore';
@@ -75,8 +75,9 @@ export class TodoModule {
     return this.lists;
   }
 
-  listViewModel(listId: string): ListViewModel {
+  listViewModel(listId: string, clock?: Clock): ListViewModel {
     return new ListViewModel(this.store, this.nav, listId, new ToggleItem(this.repository, this.store),
-      new AddItem(this.repository), new TodoItemDeleteOpener(new DeleteItem(this.repository)));
+      new AddItem(this.repository), new TodoItemDeleteOpener(new DeleteItem(this.repository)),
+      clock === undefined ? new SystemClock() : clock);
   }
 }

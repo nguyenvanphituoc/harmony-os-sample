@@ -1,0 +1,9 @@
+# Two deliberate taps on two different rows, spaced at a normal pace, toggle both rows (REQ-3)
+launch
+tap text "Groceries"
+expect count id "item.done" 1
+expect count id "item.open" 2
+tap text "Buy eggs"
+tap text "Bread"
+expect count id "item.done" 3
+expect count id "item.open" 0

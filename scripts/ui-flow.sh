@@ -12,6 +12,8 @@
 #   launch                      force-stop and start the ability (a clean cold start)
 #   tap text "Groceries"        press the first visible node whose text is exactly this
 #   tap id "lists.card.open" 2  press the Nth node (1-based) with this id
+#   doubletap text "Bread"      two clicks on the same node back-to-back (no settle between),
+#                               then one trailing settle() — same targeting as tap (kind, value, nth)
 #   type id "listname.field" "Trips"   focus the node and type
 #   back                        the system back key
 #   wait 500                    milliseconds
@@ -115,13 +117,18 @@ def run(path):
         if op == "back":
             sh("uitest uiInput keyEvent Back"); settle(); continue
         ns = nodes(tree())
-        if op in ("tap", "type"):
+        if op in ("tap", "type", "doubletap"):
             kind, value = w[1], w[2]
-            nth = int(w[3]) if op == "tap" and len(w) > 3 else 1
+            nth = int(w[3]) if op in ("tap", "doubletap") and len(w) > 3 else 1
             hits = find(ns, kind, value)
             if len(hits) < nth:
                 return f"FAIL {name} step {i}: no {kind} {value!r} to {op} (found {len(hits)})"
             n = hits[nth - 1]
+            if op == "doubletap":
+                sh(f"uitest uiInput click {n['x']} {n['y']}")
+                sh(f"uitest uiInput click {n['x']} {n['y']}")
+                settle()
+                continue
             sh(f"uitest uiInput click {n['x']} {n['y']}"); settle()
             if op == "type":
                 sh(f"uitest uiInput inputText {n['x']} {n['y']} {shlex.quote(w[3])}"); settle()
