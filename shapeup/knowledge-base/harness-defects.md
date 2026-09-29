@@ -1370,3 +1370,21 @@ suspected: `@Builder cardBuilder(card)` took the card by value. The card is now 
   knowledge base.
 - **QA-001 (lists-badge-sync)**: typing into the rename dialog right after it opens replaces the pre-filled
   name instead of appending; it needs about a second to settle. A device-timing quirk, lower urgency.
+
+## list-above-keyboard — 2026-09-29, plugin 3.18.1 (marketplace install)
+lists-badge-sync's QA-002 was reproduced by hand, reshaped (the item was covered by the keyboard, not
+gone), and shipped by the harness. It converged over three rounds: FAIL 7/17, FAIL 9/19, then PASS 19/19,
+with all four named dimensions graded in rounds 2 and 3. Round 1 had one scope not green: its rows were
+graded FAIL, the round stayed gradeable, and the bugs reached the owning scope (3.17.1 and 3.14.1 working as
+intended). The orient leg answered on its first dispatch. The fix is window-wide:
+`setKeyboardAvoidMode(KeyboardAvoidMode.RESIZE)` in `EntryAbility`, plus a `swipe` step in `ui-flow.sh`.
+The hand repro now passes: with the keyboard up, one swipe brings "Buy milk ✓" into view above it.
+
+No new harness defect. The run noted one item without acting on it: the new `device-flows/` directories may
+not be granted to the scope that owns the source they test, the probe-owner-null shape seen on retro-todo.
+It did not block, because T0 passed. It is a lint signal for the next L1b, not a defect yet.
+
+## Open for the PO (not harness defects)
+- The keyboard's Done key (完成) on an empty new-item field shows "Title can't be empty". Seen during the
+  QA-002 repro; left out of list-above-keyboard on purpose.
+- QA-001 (lists-badge-sync), the rename field replaced on immediate typing, is still open.
