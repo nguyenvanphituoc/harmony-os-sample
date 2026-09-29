@@ -1352,3 +1352,18 @@ stand, and is named at the close only on a second miss (ORIENT and WIRE). The be
 that executes the shipped post-condition. A soak (run `settle-across-screens-20260929T062138Z-31050811`)
 re-ran the shipped pitch over a fresh tier, and orient answered on its first dispatch, so the send-back was
 not needed live. PASS 18/18 criteria, requirements 5/5, no unanswered order.
+
+## lists-badge-sync — 2026-09-29, plugin 3.18.1 (marketplace install)
+settle-across-screens' QA-001 was reproduced by hand, shaped, and shipped by the harness: PASS in one round,
+10/10 criteria, requirements 6/6. The receipt says 3.18.1. All four named dimensions were graded
+(5 test-surface, 2 spec, 2 completeness, 1 tdd-surface). The orient leg answered on its first dispatch, so
+HD-13's send-back was not needed, and no order was left unanswered. The spike found the cause the pitch
+suspected: `@Builder cardBuilder(card)` took the card by value. The card is now its own `@ComponentV2` with a
+`@Param`. The hand repro flow that failed before the run passes on the shipped build.
+
+## Open for the PO (not harness defects)
+- **QA-002 (lists-badge-sync)**: adding an item on the list screen makes an already-drawn done item vanish
+  from that screen until it is reopened; the store stays right. The hunter reads it as the same by-value
+  `@Builder` pattern on the item list. Repro it by hand before shaping, as for lists-badge-sync.
+- **QA-001 (lists-badge-sync)**: typing into the rename dialog right after it opens replaces the pre-filled
+  name instead of appending; it needs about a second to settle. A device-timing quirk, lower urgency.
