@@ -1351,4 +1351,4 @@ A planning leg with a dispatch receipt and no WorkResult is now dispatched again
 stand, and is named at the close only on a second miss (ORIENT and WIRE). The behavior is proven by a check
 that executes the shipped post-condition. A soak (run `settle-across-screens-20260929T062138Z-31050811`)
 re-ran the shipped pitch over a fresh tier, and orient answered on its first dispatch, so the send-back was
-not needed live. PASS 17/17 criteria, requirements 5/5, no unanswered order.
+not needed live. PASS 18/18 criteria, requirements 5/5, no unanswered order.
