@@ -1,0 +1,11 @@
+# Back from the seeded "Groceries" list, reopen it, and a ✕ tap on a row with no toggle before it opens the dialog naming that row's item (R3)
+launch
+tap text "Groceries"
+back
+wait 500
+tap text "Groceries"
+wait 500
+tap id "list.deleteItemButton" 1
+wait 500
+expect id "confirm.message"
+expect text "Delete \"Bread\"?"

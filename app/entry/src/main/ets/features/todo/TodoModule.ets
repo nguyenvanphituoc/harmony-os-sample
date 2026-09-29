@@ -9,6 +9,7 @@ import { ToggleItem } from './domain/ToggleItem';
 import { AddItem } from './domain/AddItem';
 import { DeleteList } from './domain/DeleteList';
 import { DeleteItem } from './domain/DeleteItem';
+import { SettleWindow } from './domain/SettleWindow';
 import { ConfirmDialogHost } from './screens/confirm/ConfirmDialogHost';
 import { ListNameForm } from './screens/listname/ListNameForm';
 import { ListNameDialogHost } from './screens/listname/ListNameDialogHost';
@@ -60,6 +61,7 @@ export class TodoModule {
   readonly repository: InMemoryTodoRepository;
   private nav: NavPort;
   private lists: ListsViewModel;
+  private window: SettleWindow;
 
   constructor(nav: NavPort) {
     this.nav = nav;
@@ -69,6 +71,7 @@ export class TodoModule {
     this.lists = new ListsViewModel(this.store, nav,
       new TodoListNameOpener(new CreateList(this.repository), new RenameList(this.repository),
         new DeleteList(this.repository)));
+    this.window = new SettleWindow();
   }
 
   listsViewModel(): ListsViewModel {
@@ -78,6 +81,6 @@ export class TodoModule {
   listViewModel(listId: string, clock?: Clock): ListViewModel {
     return new ListViewModel(this.store, this.nav, listId, new ToggleItem(this.repository, this.store),
       new AddItem(this.repository), new TodoItemDeleteOpener(new DeleteItem(this.repository)),
-      clock === undefined ? new SystemClock() : clock);
+      clock === undefined ? new SystemClock() : clock, this.window);
   }
 }

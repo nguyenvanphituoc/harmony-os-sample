@@ -7,6 +7,7 @@ import { TodoStore } from '../main/ets/features/todo/domain/TodoStore';
 import { TodoList } from '../main/ets/features/todo/domain/TodoList';
 import { TodoItem } from '../main/ets/features/todo/domain/TodoItem';
 import { ToggleItem } from '../main/ets/features/todo/domain/ToggleItem';
+import { SettleWindow } from '../main/ets/features/todo/domain/SettleWindow';
 import { ListViewModel, ItemDeleteOpener } from '../main/ets/features/todo/screens/list/ListViewModel';
 
 class SettableClock implements Clock {
@@ -182,6 +183,101 @@ export default function listViewModelTest() {
       vm.onDeleteItem(bread.id);
 
       expect(opener.callCount).assertEqual(1);
+    });
+
+    it('shared window TS-01-01 a toggle on the first VM then a delete tap on the second VM inside the window opens no dialog', 0, () => {
+      const clock: SettableClock = new SettableClock();
+      const store: TodoStore = seeded(clock);
+      const repo: InMemoryTodoRepository = new InMemoryTodoRepository(store, clock, new SequenceIdGen());
+      const listId: string = groceriesId(store);
+      const bread: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Bread') as TodoItem;
+      const eggs: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Buy eggs') as TodoItem;
+      const window: SettleWindow = new SettleWindow();
+      const opener: SpyDeleteOpener = new SpyDeleteOpener();
+      const vm1: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, undefined, clock, window);
+      const vm2: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, opener, clock, window);
+
+      clock.advanceTo(1000);
+      vm1.onToggle(bread.id);
+
+      clock.advanceTo(1100);
+      vm2.onDeleteItem(eggs.id);
+
+      expect(opener.callCount).assertEqual(0);
+    });
+
+    it('shared window TS-01-02 a toggle on the first VM then a toggle tap on the second VM inside the window does not call ToggleItem', 0, () => {
+      const clock: SettableClock = new SettableClock();
+      const store: TodoStore = seeded(clock);
+      const repo: InMemoryTodoRepository = new InMemoryTodoRepository(store, clock, new SequenceIdGen());
+      const listId: string = groceriesId(store);
+      const bread: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Bread') as TodoItem;
+      const eggs: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Buy eggs') as TodoItem;
+      const window: SettleWindow = new SettleWindow();
+      const vm1: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, undefined, clock, window);
+      const vm2: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, undefined, clock, window);
+
+      clock.advanceTo(1000);
+      vm1.onToggle(bread.id);
+      const afterFirst: string = doneMap(store, listId);
+
+      clock.advanceTo(1100);
+      vm2.onToggle(eggs.id);
+
+      expect(doneMap(store, listId)).assertEqual(afterFirst);
+    });
+
+    it('shared window TS-01-03 a toggle on the first VM then, past the window, a delete tap on the second VM opens the dialog naming that row\'s item', 0, () => {
+      const clock: SettableClock = new SettableClock();
+      const store: TodoStore = seeded(clock);
+      const repo: InMemoryTodoRepository = new InMemoryTodoRepository(store, clock, new SequenceIdGen());
+      const listId: string = groceriesId(store);
+      const bread: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Bread') as TodoItem;
+      const eggs: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Buy eggs') as TodoItem;
+      const window: SettleWindow = new SettleWindow();
+      const opener: SpyDeleteOpener = new SpyDeleteOpener();
+      const vm1: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, undefined, clock, window);
+      const vm2: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, opener, clock, window);
+
+      clock.advanceTo(1000);
+      vm1.onToggle(bread.id);
+
+      clock.advanceTo(1400);
+      vm2.onDeleteItem(eggs.id);
+
+      expect(opener.callCount).assertEqual(1);
+      expect(opener.lastItemId).assertEqual(eggs.id);
+      expect(opener.lastTitle).assertEqual(eggs.title);
+    });
+
+    it('shared window TS-01-04 a toggle on the first VM then, past the window, a toggle tap on the second VM calls ToggleItem', 0, () => {
+      const clock: SettableClock = new SettableClock();
+      const store: TodoStore = seeded(clock);
+      const repo: InMemoryTodoRepository = new InMemoryTodoRepository(store, clock, new SequenceIdGen());
+      const listId: string = groceriesId(store);
+      const bread: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Bread') as TodoItem;
+      const eggs: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Buy eggs') as TodoItem;
+      const window: SettleWindow = new SettleWindow();
+      const vm1: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, undefined, clock, window);
+      const vm2: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, undefined, clock, window);
+
+      clock.advanceTo(1000);
+      vm1.onToggle(bread.id);
+      const eggsBefore: boolean = (store.items.find((i: TodoItem): boolean => i.id === eggs.id) as TodoItem).done;
+
+      clock.advanceTo(1400);
+      vm2.onToggle(eggs.id);
+      const eggsAfter: boolean = (store.items.find((i: TodoItem): boolean => i.id === eggs.id) as TodoItem).done;
+
+      expect(eggsAfter).assertEqual(!eggsBefore);
     });
   });
 }

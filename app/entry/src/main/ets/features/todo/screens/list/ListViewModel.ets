@@ -8,8 +8,7 @@ import { ItemOrder } from '../../domain/ItemOrder';
 import { ToggleItem } from '../../domain/ToggleItem';
 import { AddItem } from '../../domain/AddItem';
 import { ErrorCode, Result } from '../../domain/Result';
-
-const SETTLE_WINDOW_MS: number = 400;
+import { SettleWindow } from '../../domain/SettleWindow';
 
 export interface ItemDeleteOpener {
   openDelete(itemId: string, title: string): void;
@@ -24,14 +23,13 @@ export class ListViewModel {
   private addItem: AddItem | undefined;
   private dialogs: ItemDeleteOpener | undefined;
   private clock: Clock;
-  private lastToggleAt: number | null = null;
-  private readonly windowMs: number = SETTLE_WINDOW_MS;
+  private window: SettleWindow;
   @Trace loaded: boolean = false;
   @Trace newTitle: string = '';
   @Trace hasTitleError: boolean = false;
 
   constructor(store: TodoStore, nav: NavPort, listId: string, toggleItem?: ToggleItem, addItem?: AddItem,
-              dialogs?: ItemDeleteOpener, clock?: Clock) {
+              dialogs?: ItemDeleteOpener, clock?: Clock, window?: SettleWindow) {
     this.store = store;
     this.nav = nav;
     this.listId = listId;
@@ -39,6 +37,7 @@ export class ListViewModel {
     this.addItem = addItem;
     this.dialogs = dialogs;
     this.clock = clock === undefined ? new SystemClock() : clock;
+    this.window = window === undefined ? new SettleWindow() : window;
   }
 
   @Computed
@@ -64,20 +63,16 @@ export class ListViewModel {
     this.loaded = true;
   }
 
-  private isSettling(now: number): boolean {
-    return this.lastToggleAt !== null && now - this.lastToggleAt < this.windowMs;
-  }
-
   onToggle(itemId: string): void {
     if (this.toggleItem === undefined) {
       return;
     }
     const now: number = this.clock.now();
-    if (this.isSettling(now)) {
+    if (this.window.isSettling(now)) {
       return;
     }
     this.toggleItem.execute(itemId);
-    this.lastToggleAt = now;
+    this.window.mark(now);
   }
 
   onTitleChange(value: string): void {
@@ -99,7 +94,7 @@ export class ListViewModel {
 
   onDeleteItem(itemId: string): void {
     const now: number = this.clock.now();
-    if (this.isSettling(now)) {
+    if (this.window.isSettling(now)) {
       return;
     }
     const found: TodoItem | undefined = this.store.items.find((i: TodoItem): boolean => i.id === itemId);
