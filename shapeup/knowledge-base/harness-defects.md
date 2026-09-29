@@ -1345,3 +1345,10 @@ requirements 5/5, QA 1 finding. It is the first run on the released 3.18.0 (`rec
 - **QA-001 (settle-across-screens)**: the MY LISTS "done" badge stays stale after toggles on the list
   screen. The hunter reports that it survives a force-stop and relaunch. Not verified by hand, and the
   relaunch part is surprising for an in-memory store, so repro it before shaping.
+
+## HD-13 — fixed in plugin 3.18.1 (2026-09-29)
+A planning leg with a dispatch receipt and no WorkResult is now dispatched again once, told its artifacts
+stand, and is named at the close only on a second miss (ORIENT and WIRE). The behavior is proven by a check
+that executes the shipped post-condition. A soak (run `settle-across-screens-20260929T062138Z-31050811`)
+re-ran the shipped pitch over a fresh tier, and orient answered on its first dispatch, so the send-back was
+not needed live. PASS 17/17 criteria, requirements 5/5, no unanswered order.
