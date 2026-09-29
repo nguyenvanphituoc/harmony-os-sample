@@ -1275,3 +1275,32 @@ toggles. QA-001 of the last run ("two quick taps on two rows both drop") did not
 tap toggles and only the second, inside the 400 ms window, is ignored, as designed. Open, for the PO:
 C-02, a tap on a row's ✕ just after a toggle re-sorts the list can open the delete dialog for the item
 that slid into place (one CANCEL from a wrong-item delete).
+
+## Re-check of the last trace — 2026-09-29, run `toggle-once-20260928T114548Z-e2675ab4`
+This was read from the run's own records (receipt 3.17.1, gate ledger, hook ledger, verdict, and all
+seven exports). The run's narration was not used. Hook ledger: 225 rows for this run, every one
+`allow`, and no denial the run worked around.
+
+| HD | Status | Evidence |
+|---|---|---|
+| 25 | **fixed in 3.17.2, not yet seen live** | this run's receipt says 3.17.1, and its close still narrates "requirements 0/5". No run has used 3.17.2 yet |
+| 26 (new) | open, plugin HD-069 | below |
+| 27 (new) | open, plugin HD-070 | below |
+
+## HD-26 — the judge grades one dimension on every run, whatever the spec carries
+`harness-run.md` opens with `eval_dimensions: [spec-conformance]`, and `orders/evaluate-r1.json` passes
+exactly that list. By the judge's own rule an explicit list switches off its auto-enable, so
+`test-surface-conformance` never ran here, although `spec/usecases/UC-01.md` carries a Test Surface.
+Across all seven exported runs, 101 of 101 criterion verdicts are `spec-conformance`. The L4 block
+says as much ("not evaluated: tdd-surface, integration, completeness, test-surface-conformance"),
+and until now nobody had read that line as a defect.
+
+## HD-27 — the relaunch re-signed L1a, L1a.5 and L1b while the run still read closed
+Close `aborted` at 11:54:41. The gate rows re-crossed at 11:58:22, 11:58:35 and 11:59:04, and the
+reopen came at 11:59:08, on the first `building` write. The Decisions table lists each planning gate
+twice. The only other traffic in that window was the canary Orient (no order) and read-only
+commands, so nothing was built over the closed run.
+
+## Open for the PO (not harness defects)
+- **C-02**: after a toggle re-sorts the list, a tap on a row's ✕ can open the delete dialog for the
+  item that slid into that row. One CANCEL stands between the user and deleting the wrong item.
