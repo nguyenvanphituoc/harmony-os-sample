@@ -1304,3 +1304,29 @@ commands, so nothing was built over the closed run.
 ## Open for the PO (not harness defects)
 - **C-02**: after a toggle re-sorts the list, a tap on a row's ✕ can open the delete dialog for the
   item that slid into that row. One CANCEL stands between the user and deleting the wrong item.
+
+## delete-settle soak — 2026-09-29, plugin working tree past 3.17.2, run `delete-settle-20260929T031445Z-607891db`
+C-02 was shaped as its own pitch (`delete-settle`). The run used a `git archive` copy of the plugin
+as `--plugin-dir`, outside this project (the shape of a marketplace clone), with the installed copy
+disabled for the session, and Sonnet at every tier. It was killed mid-BUILD, closed `aborted`, and
+relaunched. It shipped PASS in one round: 13/13 criteria, requirements 5/5, QA 1 finding.
+
+| HD | Status | Evidence |
+|---|---|---|
+| 25 | **verified live** | 6 of 13 criteria carry `traces_to`; requirements 5/5 PASS |
+| 26 | **fixed, verified live** | the ledger reads `eval_dimensions: auto`; `orders/evaluate-r1.json` names spec-conformance, tdd-surface, completeness and test-surface-conformance; the verdict graded three of them |
+| 27 | **fixed, verified live** | reopen at 03:21:54, before any relaunch gate; the Decisions table marks every row after it `launch 2 (after a reopen)` |
+| 28 (new) | fixed | the relaunch copied the orchestrator's `\`-continued `init run` and came back "requires approval" over a grant that covers it. The shipped command is now one line |
+| 29 (new) | fixed | the next relaunch ran `init run --force` and opened a fresh run, following the pause table's "`--force` if truly restarting" for an aborted run. The table now says a relaunch resumes |
+| 30 (new) | fixed | after the reopen, 225 of 234 hook rows carried no run key: the close retired the run pointer and nothing wrote it back. The reopen now restores it |
+| 31 (new) | fixed | the PASS graded no criterion under `tdd-surface`, which the order named, and L4 listed it as evaluated. A PASS with an ungraded named dimension is now sent back once |
+
+The two build legs ran one after the other (v2 depends on v1), so the concurrent case of the plugin's
+sibling-result guard is proven by fixture only. Live, the guard allowed 14 in-substrate writes,
+including every leg's own result, and refused 2 writes to `/tmp`; it made no false refusal.
+
+## Open for the PO (not harness defects)
+- **QA-001 (delete-settle)**: the settle window lives on the `ListViewModel` instance, and every navigation
+  builds a new one (`Index.ets` → `TodoModule.listViewModel()`). So toggle, back, reopen and delete inside
+  400 ms opens the dialog. The finding contradicts INV-02 as written, but the gesture is contrived. It is
+  worth a pitch only if the PO wants the window to be screen-independent.
