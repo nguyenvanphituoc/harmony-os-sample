@@ -1,0 +1,13 @@
+# With list.newItemField focused (keyboard up) on the seeded "Groceries" list, a swipe on the
+# item list scrolls the done item ("Buy milk") into view and it is tappable, without closing the
+# keyboard (TS-01-01) (covers: REQ-1). Bounds diffing cannot see the keyboard (spike-keyboard-avoid.md),
+# so reachability + a successful tap-toggle is the observable signal.
+launch
+tap text "Groceries"
+tap id "list.newItemField"
+wait 300
+swipe id "list.itemCard" up
+expect text "Buy milk"
+tap text "Buy milk"
+expect count id "item.done" 0
+expect count id "item.open" 3

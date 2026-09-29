@@ -1,0 +1,10 @@
+# Opening the new-list dialog and focusing listName.field (keyboard up) leaves the same dialog
+# elements on screen: listName.title, listName.field, listName.saveButton, listName.cancelButton
+launch
+tap id "lists.newButton"
+wait 500
+type id "listName.field" "Trips"
+expect id "listName.title"
+expect id "listName.field"
+expect id "listName.saveButton"
+expect id "listName.cancelButton"

@@ -1,0 +1,9 @@
+# scripts/ui-flow.sh parses a `swipe id "<node>" up|down` step and resolves `<node>` via the same
+# find() lookup tap uses (TS-01-06) (covers: REQ-5, INV-05). Exercises both directions directly,
+# independent of the keyboard-up reachability checks TS-01-01/02 already cover.
+launch
+tap text "Groceries"
+swipe id "list.itemCard" up
+expect text "Buy milk"
+swipe id "list.itemCard" down
+expect text "Buy eggs"

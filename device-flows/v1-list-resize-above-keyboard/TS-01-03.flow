@@ -1,0 +1,17 @@
+# With no field focused, the seeded "Groceries" list (list.itemCard, list.title) and the My Lists
+# screen render with no swipe needed — the same item text/order visible as today, keyboard closed
+# (TS-01-03) (covers: REQ-3).
+launch
+expect id "lists.card"
+expect text "Groceries"
+expect text "Weekend"
+expect text "Work"
+tap text "Groceries"
+expect id "list.title"
+expect text "Groceries"
+expect id "list.itemCard"
+expect text "Buy eggs"
+expect text "Bread"
+expect text "Buy milk"
+expect count id "item.done" 1
+expect count id "item.open" 2

@@ -15,6 +15,8 @@
 #   doubletap text "Bread"      two clicks on the same node back-to-back (no settle between),
 #                               then one trailing settle() — same targeting as tap (kind, value, nth)
 #   type id "listname.field" "Trips"   focus the node and type
+#   swipe id "list.items" up    swipe across the resolved node's bounds, bottom toward top
+#   swipe id "list.items" down  swipe across the resolved node's bounds, top toward bottom
 #   back                        the system back key
 #   wait 500                    milliseconds
 #   expect text "Bread"         a node with this text is on screen
@@ -89,7 +91,7 @@ def nodes(t):
         if m:
             x1, y1, x2, y2 = map(int, m.groups())
             if x2 > x1 and y2 > y1 and a.get("visible", "true") != "false":
-                out.append({"id": a.get("id", ""), "text": a.get("text", ""), "x": (x1 + x2) // 2, "y": (y1 + y2) // 2, "top": y1})
+                out.append({"id": a.get("id", ""), "text": a.get("text", ""), "x": (x1 + x2) // 2, "y": (y1 + y2) // 2, "top": y1, "bottom": y2})
         for c in n.get("children", []): walk(c)
     walk(t)
     return out
@@ -132,6 +134,16 @@ def run(path):
             sh(f"uitest uiInput click {n['x']} {n['y']}"); settle()
             if op == "type":
                 sh(f"uitest uiInput inputText {n['x']} {n['y']} {shlex.quote(w[3])}"); settle()
+            continue
+        if op == "swipe":
+            kind, value, direction = w[1], w[2], w[3]
+            hits = find(ns, kind, value)
+            if not hits:
+                return f"FAIL {name} step {i}: no {kind} {value!r} to swipe (found 0)"
+            n = hits[0]
+            x1 = x2 = n["x"]
+            y1, y2 = (n["bottom"], n["top"]) if direction == "up" else (n["top"], n["bottom"])
+            sh(f"uitest uiInput swipe {x1} {y1} {x2} {y2}"); settle()
             continue
         if op == "expect":
             if w[1] == "no":

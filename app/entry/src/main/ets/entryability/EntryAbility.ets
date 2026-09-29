@@ -1,7 +1,7 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { UiContextHolder } from '../shared/kernel/UiContextHolder';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { window } from '@kit.ArkUI';
+import { window, KeyboardAvoidMode } from '@kit.ArkUI';
 
 const DOMAIN = 0x0000;
 
@@ -24,7 +24,9 @@ export default class EntryAbility extends UIAbility {
         return;
       }
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_LIGHT);
-      UiContextHolder.capture(windowStage.getMainWindowSync().getUIContext());
+      const uiCtx = windowStage.getMainWindowSync().getUIContext();
+      UiContextHolder.capture(uiCtx);
+      uiCtx.setKeyboardAvoidMode(KeyboardAvoidMode.RESIZE);
       hilog.info(DOMAIN, 'testTag', 'Succeeded in loading the content.');
     });
   }

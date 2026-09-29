@@ -1,0 +1,10 @@
+# Opening the rename dialog and focusing listName.field (keyboard up) leaves listName.title,
+# listName.field, listName.saveButton and listName.cancelButton all on screen
+launch
+tap id "lists.renameButton"
+wait 500
+type id "listName.field" "Groceries"
+expect id "listName.title"
+expect id "listName.field"
+expect id "listName.saveButton"
+expect id "listName.cancelButton"

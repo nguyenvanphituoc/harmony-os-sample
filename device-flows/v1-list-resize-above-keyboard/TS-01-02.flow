@@ -1,0 +1,13 @@
+# With the keyboard up, adding a new item ("Batteries") via list.addButton shows the new item,
+# and the done item ("Buy milk") is still reachable by swiping, without closing the keyboard
+# (TS-01-02) (covers: REQ-2).
+launch
+tap text "Groceries"
+tap id "list.newItemField"
+wait 300
+type id "list.newItemField" "Batteries"
+tap id "list.addButton"
+wait 300
+expect text "Batteries"
+swipe id "list.itemCard" up
+expect text "Buy milk"
