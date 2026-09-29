@@ -1,0 +1,13 @@
+# Rename a list, and MY LISTS shows the new name on that list's card, at the same screen
+# position it held before the rename (R3, R6). Seed order (createdAt desc): Groceries, Work,
+# Weekend -> Groceries is the topmost card, so its rename button is the first "lists.renameButton".
+# listName.field pre-fills the current name with the cursor at the end, and the fixture's `type`
+# step (like a native keyboard with no select-all key) inserts at the cursor rather than replacing
+# — so the saved name is the pre-filled text plus what's typed, "GroceriesSnacks".
+launch
+expect order text "Groceries" "Work"
+tap id "lists.renameButton" 1
+type id "listName.field" "Snacks"
+tap id "listName.saveButton"
+expect text "GroceriesSnacks"
+expect order text "GroceriesSnacks" "Work"

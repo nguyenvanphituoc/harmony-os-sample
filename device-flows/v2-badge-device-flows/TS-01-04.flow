@@ -1,0 +1,12 @@
+# Delete an item from a list, back out to MY LISTS, and that list's card reads the new done
+# count and/or total, as applicable (R5). Groceries seeds Buy milk (done), Buy eggs (open),
+# Bread (open) -> starts at "1/3 done"; ItemOrder sorts open rows (newest first) before done
+# rows, so the topmost delete button belongs to Bread (open, not done).
+launch
+tap text "Groceries"
+expect text "Bread"
+tap id "list.deleteItemButton" 1
+tap id "confirm.deleteButton"
+expect no text "Bread"
+back
+expect text "1/2 done"

@@ -6,33 +6,38 @@ import { RetroCard } from '../../../../shared/uikit/RetroCard';
 import { ListCard, ListsViewModel } from './ListsViewModel';
 
 @ComponentV2
-export struct ListsPage {
-  @Param @Require vm: ListsViewModel;
+struct ListCardView {
+  @Param @Require card: ListCard;
+  @Event onOpen: () => void = () => {
+  };
+  @Event onRename: () => void = () => {
+  };
+  @Event onDelete: () => void = () => {
+  };
 
-  @Builder
-  cardBuilder(card: ListCard) {
+  build() {
     RetroCard({ testId: 'lists.card' }) {
       Row({ space: 8 }) {
         Column({ space: 4 }) {
-          AppText({ text: card.name, textSize: $r('app.float.fontTitle'), bold: true })
-          if (card.total === 0) {
+          AppText({ text: this.card.name, textSize: $r('app.float.fontTitle'), bold: true })
+          if (this.card.total === 0) {
             AppText({ text: $r('app.string.progress_none'), color: $r('app.color.inkMuted') })
           } else {
-            AppText({ text: $r('app.string.progress_done', card.done, card.total), color: $r('app.color.inkMuted') })
+            AppText({ text: $r('app.string.progress_done', this.card.done, this.card.total), color: $r('app.color.inkMuted') })
           }
         }
         .id('lists.card.open')
         .alignItems(HorizontalAlign.Start)
         .layoutWeight(1)
         .onClick(() => {
-          this.vm.onOpen(card.id);
+          this.onOpen();
         })
         RetroButton({
           label: $r('app.string.icon_rename'),
           variant: ButtonVariant.Icon,
           testId: 'lists.renameButton',
           onTap: () => {
-            this.vm.onRename(card.id);
+            this.onRename();
           }
         })
         RetroButton({
@@ -40,7 +45,7 @@ export struct ListsPage {
           variant: ButtonVariant.Icon,
           testId: 'lists.deleteButton',
           onTap: () => {
-            this.vm.onDelete(card.id);
+            this.onDelete();
           }
         })
       }
@@ -48,6 +53,11 @@ export struct ListsPage {
       .padding($r('app.float.spacingM'))
     }
   }
+}
+
+@ComponentV2
+export struct ListsPage {
+  @Param @Require vm: ListsViewModel;
 
   @Builder
   readyBuilder() {
@@ -57,7 +67,18 @@ export struct ListsPage {
         Repeat<ListCard>(this.vm.cards)
           .each((r: RepeatItem<ListCard>) => {
             ListItem() {
-              this.cardBuilder(r.item)
+              ListCardView({
+                card: r.item,
+                onOpen: () => {
+                  this.vm.onOpen(r.item.id);
+                },
+                onRename: () => {
+                  this.vm.onRename(r.item.id);
+                },
+                onDelete: () => {
+                  this.vm.onDelete(r.item.id);
+                }
+              })
             }
           })
           .key((card: ListCard, index: number): string => card.id + '|' + card.name + '|' + card.done + '|' + card.total)
