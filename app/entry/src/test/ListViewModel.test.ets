@@ -7,7 +7,7 @@ import { TodoStore } from '../main/ets/features/todo/domain/TodoStore';
 import { TodoList } from '../main/ets/features/todo/domain/TodoList';
 import { TodoItem } from '../main/ets/features/todo/domain/TodoItem';
 import { ToggleItem } from '../main/ets/features/todo/domain/ToggleItem';
-import { ListViewModel } from '../main/ets/features/todo/screens/list/ListViewModel';
+import { ListViewModel, ItemDeleteOpener } from '../main/ets/features/todo/screens/list/ListViewModel';
 
 class SettableClock implements Clock {
   private current: number = 0;
@@ -26,6 +26,18 @@ class NoopNav implements NavPort {
   }
 
   pop(): void {
+  }
+}
+
+class SpyDeleteOpener implements ItemDeleteOpener {
+  callCount: number = 0;
+  lastItemId: string = '';
+  lastTitle: string = '';
+
+  openDelete(itemId: string, title: string): void {
+    this.callCount = this.callCount + 1;
+    this.lastItemId = itemId;
+    this.lastTitle = title;
   }
 }
 
@@ -103,6 +115,73 @@ export default function listViewModelTest() {
       vm.onToggle(eggs.id);
 
       expect(doneMap(store, listId)).assertEqual(afterFirst);
+    });
+
+    it('delete TS-01-01 a delete tap within the settle window of a toggle opens no dialog', 0, () => {
+      const clock: SettableClock = new SettableClock();
+      const store: TodoStore = seeded(clock);
+      const repo: InMemoryTodoRepository = new InMemoryTodoRepository(store, clock, new SequenceIdGen());
+      const listId: string = groceriesId(store);
+      const bread: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Bread') as TodoItem;
+      const opener: SpyDeleteOpener = new SpyDeleteOpener();
+      const vm: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, opener, clock);
+
+      clock.advanceTo(1000);
+      vm.onToggle(bread.id);
+
+      clock.advanceTo(1100);
+      vm.onDeleteItem(bread.id);
+
+      expect(opener.callCount).assertEqual(0);
+    });
+
+    it('delete TS-01-02 a delete tap at or after the settle window of a toggle opens the dialog', 0, () => {
+      const clock: SettableClock = new SettableClock();
+      const store: TodoStore = seeded(clock);
+      const repo: InMemoryTodoRepository = new InMemoryTodoRepository(store, clock, new SequenceIdGen());
+      const listId: string = groceriesId(store);
+      const bread: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Bread') as TodoItem;
+      const opener: SpyDeleteOpener = new SpyDeleteOpener();
+      const vm: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, opener, clock);
+
+      clock.advanceTo(1000);
+      vm.onToggle(bread.id);
+
+      clock.advanceTo(1400);
+      vm.onDeleteItem(bread.id);
+
+      expect(opener.callCount).assertEqual(1);
+      expect(opener.lastItemId).assertEqual(bread.id);
+      expect(opener.lastTitle).assertEqual(bread.title);
+    });
+
+    it('delete TS-01-03 a delete tap inside the settle window does not extend it', 0, () => {
+      const clock: SettableClock = new SettableClock();
+      const store: TodoStore = seeded(clock);
+      const repo: InMemoryTodoRepository = new InMemoryTodoRepository(store, clock, new SequenceIdGen());
+      const listId: string = groceriesId(store);
+      const bread: TodoItem = store.items.find((i: TodoItem): boolean => i.title === 'Bread') as TodoItem;
+      const opener: SpyDeleteOpener = new SpyDeleteOpener();
+      const vm: ListViewModel = new ListViewModel(store, new NoopNav(), listId,
+        new ToggleItem(repo, store), undefined, opener, clock);
+
+      clock.advanceTo(1000);
+      vm.onToggle(bread.id);
+
+      clock.advanceTo(1100);
+      vm.onDeleteItem(bread.id);
+
+      clock.advanceTo(1399);
+      vm.onDeleteItem(bread.id);
+
+      expect(opener.callCount).assertEqual(0);
+
+      clock.advanceTo(1400);
+      vm.onDeleteItem(bread.id);
+
+      expect(opener.callCount).assertEqual(1);
     });
   });
 }

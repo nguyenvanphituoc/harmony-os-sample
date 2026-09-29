@@ -98,6 +98,10 @@ export class ListViewModel {
   }
 
   onDeleteItem(itemId: string): void {
+    const now: number = this.clock.now();
+    if (this.isSettling(now)) {
+      return;
+    }
     const found: TodoItem | undefined = this.store.items.find((i: TodoItem): boolean => i.id === itemId);
     if (found !== undefined && this.dialogs !== undefined) {
       this.dialogs.openDelete(itemId, found.title);

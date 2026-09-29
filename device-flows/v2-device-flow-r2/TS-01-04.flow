@@ -1,0 +1,7 @@
+# A live ✕ tap on a row with no toggle before it opens the delete dialog naming that row's item (R2)
+launch
+tap text "Groceries"
+tap id "list.deleteItemButton" 1
+wait 500
+expect id "confirm.message"
+expect text "Delete \"Bread\"?"
