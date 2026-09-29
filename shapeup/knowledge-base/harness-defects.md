@@ -1330,3 +1330,18 @@ including every leg's own result, and refused 2 writes to `/tmp`; it made no fal
   builds a new one (`Index.ets` → `TodoModule.listViewModel()`). So toggle, back, reopen and delete inside
   400 ms opens the dialog. The finding contradicts INV-02 as written, but the gesture is contrived. It is
   worth a pitch only if the PO wants the window to be screen-independent.
+
+## settle-across-screens — 2026-09-29, plugin 3.18.0 (marketplace install), run `settle-across-screens-20260929T045649Z-4f29bf…`
+delete-settle's QA-001 was shaped as its own pitch and shipped PASS in one round: 17/17 criteria,
+requirements 5/5, QA 1 finding. It is the first run on the released 3.18.0 (`receipt.json` → 3.18.0).
+
+| HD | Status | Evidence |
+|---|---|---|
+| 26 | holds on the release | the ledger reads `auto`; the order names four dimensions |
+| 31 | **verified live** | all four named dimensions are graded (6 test-surface, 5 spec, 5 completeness, 1 tdd-surface); delete-settle's PASS had left tdd-surface empty |
+| 13 | **recurred (3rd time)** | the orient order has a dispatch receipt and no WorkResult or leg row. Its four artifacts are on disk, so the phase went on; the close names `unanswered_orders=1`, as designed. Every recurrence so far is the orient leg: a raw idea for the Betting Table is a send-back-once for a phase whose envelope never came back |
+
+## Open for the PO (not harness defects)
+- **QA-001 (settle-across-screens)**: the MY LISTS "done" badge stays stale after toggles on the list
+  screen. The hunter reports that it survives a force-stop and relaunch. Not verified by hand, and the
+  relaunch part is surprising for an in-memory store, so repro it before shaping.
