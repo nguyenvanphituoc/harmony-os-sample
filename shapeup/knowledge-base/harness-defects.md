@@ -1362,8 +1362,11 @@ suspected: `@Builder cardBuilder(card)` took the card by value. The card is now 
 `@Param`. The hand repro flow that failed before the run passes on the shipped build.
 
 ## Open for the PO (not harness defects)
-- **QA-002 (lists-badge-sync)**: adding an item on the list screen makes an already-drawn done item vanish
-  from that screen until it is reopened; the store stays right. The hunter reads it as the same by-value
-  `@Builder` pattern on the item list. Repro it by hand before shaping, as for lists-badge-sync.
+- **QA-002 (lists-badge-sync)**: reproduced by hand, and it is not what it says. The done item never left
+  the screen. The soft keyboard covered it, and the layout tree the hunter read leaves out what the keyboard
+  covers. What is real: with the keyboard up the list does not shrink or scroll, so the bottom items cannot
+  be reached. Shaped as `list-above-keyboard`. For the plugin: a hunt that reads `dumpLayout` with the
+  keyboard up reports covered nodes as missing, a false-positive class worth a line in the hunter's
+  knowledge base.
 - **QA-001 (lists-badge-sync)**: typing into the rename dialog right after it opens replaces the pre-filled
   name instead of appending; it needs about a second to settle. A device-timing quirk, lower urgency.
